@@ -9,6 +9,10 @@ import java.util.List;
 
 public interface Model {
 
+    List<Group> getGroups();
+
+    void saveGroup(Group group);
+
     void saveEvent(CalendarEvent calendarEvent, Group group);
 
     Pair<User, List<CalendarEvent>> loadEventsByUser();
