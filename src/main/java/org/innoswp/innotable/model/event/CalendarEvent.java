@@ -1,15 +1,15 @@
-package org.innoswp.innotable.model.data;
+package org.innoswp.innotable.model.event;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public abstract class Event {
+public abstract class CalendarEvent {
     private final long id;
     private String title;
+    private String description;
     private Location location;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Group group;
 }

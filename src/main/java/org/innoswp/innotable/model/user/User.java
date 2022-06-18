@@ -1,4 +1,4 @@
-package org.innoswp.innotable.model.data;
+package org.innoswp.innotable.model.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
