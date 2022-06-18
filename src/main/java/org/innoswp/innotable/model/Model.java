@@ -13,6 +13,10 @@ public interface Model {
 
     void saveGroup(Group group);
 
+    List<Role> getRoles();
+
+    void saveRole(Role role);
+
     void saveEvent(CalendarEvent calendarEvent, Group group);
 
     Pair<User, List<CalendarEvent>> loadEventsByUser(User user);
