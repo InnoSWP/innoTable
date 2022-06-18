@@ -15,7 +15,7 @@ public interface Model {
 
     void saveEvent(CalendarEvent calendarEvent, Group group);
 
-    Pair<User, List<CalendarEvent>> loadEventsByUser();
+    Pair<User, List<CalendarEvent>> loadEventsByUser(User user);
 
     List<Pair<Group, CalendarEvent>> loadAllEvents();
 
