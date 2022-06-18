@@ -1,4 +1,4 @@
 package org.innoswp.innotable.model;
 
-public record Pair<A, B>(A a, B b) {
+public record Pair<A, B>(A first, B second) {
 }
