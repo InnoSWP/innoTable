@@ -1,15 +1,6 @@
 package org.innoswp.innotable.model.user;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import java.util.List;
 
-@Getter
-@AllArgsConstructor
-@EqualsAndHashCode
-public abstract class User {
-    private String email;
-    private String password;
-    private final Group group;
-    private final Role role;
+public record User(String email, String password, List<Group> group, Role role) {
 }
