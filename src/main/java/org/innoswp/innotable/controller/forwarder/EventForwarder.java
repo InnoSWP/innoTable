@@ -13,5 +13,5 @@ public interface EventForwarder {
 
     void pushEventsForGroup(Group group, List<CalendarEvent> groupEvents);
 
-    void pushAllEvents(List<Pair<Group, CalendarEvent>> events);
+    void pushAllEvents(List<Pair<Group, List<CalendarEvent>>> events);
 }
