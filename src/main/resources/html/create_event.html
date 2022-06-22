@@ -71,9 +71,9 @@
 
             <div>
                 <div class="checkselect">
-                    <label><input type="checkbox" name="brands[]" value="1">bachelor</label>
-                    <label><input type="checkbox" name="brands[]" value="2">master</label>
-                    <label><input type="checkbox" name="brands[]" value="3">phd</label>
+                    <label><input type="checkbox" name="groups[]" id="1" value="bachelor">bachelor</label>
+                    <label><input type="checkbox" name="groups[]" id="2" value="master">master</label>
+                    <label><input type="checkbox" name="groups[]" id="3" value="phd">phd</label>
                 </div>
 
                 <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
@@ -126,9 +126,9 @@
                     $('.checkselect').checkselect();
                 </script>
             </div>
-
+            <script src="../js/read.js"></script>
             <div>
-                <button type="button" class="btn mt-3 form-control" id="loginbtn" onclick="location.href='page1.html'">
+                <button type="button" class="btn mt-3 form-control" id="loginbtn" onclick=getEvent()>
                     Save
                 </button>
             </div>
