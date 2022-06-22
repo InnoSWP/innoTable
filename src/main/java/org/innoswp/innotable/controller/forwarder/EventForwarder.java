@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface EventForwarder {
 
-    void pushEventForUser(User user, List<CalendarEvent> userEvents);
+    void pushEventForUser(User user, List<CalendarEvent> userEvents) throws Exception;
 
-    void pushEventsForGroup(Group group, List<CalendarEvent> groupEvents);
+    void pushEventsForGroup(Group group, List<CalendarEvent> groupEvents) throws Exception;
 
-    void pushAllEvents(List<Pair<Group, List<CalendarEvent>>> events);
+    void pushAllEvents(List<Pair<Group, List<CalendarEvent>>> events) throws Exception;
 }
