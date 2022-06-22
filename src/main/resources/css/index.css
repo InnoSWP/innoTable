@@ -1,0 +1,91 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--color_storm_dust_approx);
+    padding-top: 0;
+    background: var(--white);
+}
+
+body {
+    font-size: 20px;
+}
+
+body {
+    margin: 0;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.title {
+    color: var(--black);
+    background: var(--color_primary);
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.block {
+    border: 2px solid #656565;
+    color: #000;
+    background-color: var(--color_primary);
+    font-size: 18px;
+
+    width: 600px;
+    height: 90px;
+    padding: 0;
+
+    margin: 0 auto 20px auto;
+}
+
+#page .card {
+    margin-top: 50px;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background-color: #fff;
+    background-clip: border-box;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+form input[type="text"] {
+    max-width: 1200px;
+}
+
+input[type="text"] {
+    height: 40px;
+    width: 600px;
+    border-radius: 0;
+    font-size: 20px;
+}
+
+input[type="password"] {
+    height: 40px;
+    width: 600px;
+    border-radius: 0;
+    font-size: 20px;
+}
+
+.btn {
+    font-size: 20px;
+    font-weight: bold;
+    height: 40px;
+    width: 600px;
+    background-color: var(--color_primary);
+}
+
+:root {
+    --color_primary: #88b77b;
+    --black: #000;
+    --white: #fff;
+    --color_storm_dust_approx: #656565;
+}
