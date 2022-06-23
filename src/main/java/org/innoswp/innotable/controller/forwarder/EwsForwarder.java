@@ -11,46 +11,37 @@ import org.innoswp.innotable.model.Pair;
 import org.innoswp.innotable.model.event.CalendarEvent;
 import org.innoswp.innotable.model.user.Group;
 import org.innoswp.innotable.model.user.User;
+import org.springframework.beans.factory.annotation.Value;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 @Slf4j
 public class EwsForwarder implements EventForwarder {
-    private static final Properties properties = new Properties();
-
-    static {
-        try {
-            log.info("Loading outlook_auth.properties for EwsForwarder");
-
-            properties.load(new BufferedReader(
-                    new FileReader("src/main/resources/outlook_auth.properties"))
-            );
-        } catch (IOException e) {
-            log.error("Cannot read outlook_auth.properties file!");
-            throw new RuntimeException("Cannot read outlook_auth.properties file!");
-        }
-    }
-
     private final ExchangeService service = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
 
     private final Model model;
 
+    @Value("${ews.service.url}")
+    private String SERVICE_URL;
+
+    @Value("${ews.service.email}")
+    private String SERVICE_EMAIL;
+
+    @Value("${ews.service.password}")
+    private String SERVICE_PASSWORD;
+
     public EwsForwarder(Model model) {
         this.model = model;
 
-        service.setUrl(URI.create(properties.getProperty("ews.service.url")));
+        service.setUrl(URI.create(SERVICE_URL));
 
         service.setCredentials(new WebCredentials(
-                properties.getProperty("ews.service.admin.email"),
-                properties.getProperty("ews.service.admin.password")
+                SERVICE_EMAIL,
+                SERVICE_PASSWORD
         ));
 
         service.setPreAuthenticate(true);

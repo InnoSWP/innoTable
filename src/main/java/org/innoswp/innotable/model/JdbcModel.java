@@ -6,22 +6,16 @@ import org.innoswp.innotable.model.event.Location;
 import org.innoswp.innotable.model.user.Group;
 import org.innoswp.innotable.model.user.Role;
 import org.innoswp.innotable.model.user.User;
+import org.springframework.beans.factory.annotation.Value;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 
 @Slf4j
 public class JdbcModel implements Model {
-
-    private static final Properties properties = new Properties();
-
     public JdbcModel() throws SQLException {
         var setupQuery = """                               
                 CREATE TABLE IF NOT EXISTS "group"(
@@ -66,23 +60,21 @@ public class JdbcModel implements Model {
         }
     }
 
-    static {
-        try {
-            log.info("Loading database_config.properties for JdbcModel");
+    @Value("${db.url}")
+    private static String DB_URL;
 
-            properties.load(new BufferedReader(new FileReader("src/main/resources/database_config.properties")));
-        } catch (IOException e) {
-            log.error("Cannot read database_config.properties file!");
-            throw new RuntimeException("Cannot read database_config.properties file!");
-        }
-    }
+    @Value("${db.username}")
+    private static String DB_USERNAME;
+
+    @Value("${db.password}")
+    private static String DB_PASSWORD;
 
     private static Connection open() {
         try {
             return DriverManager.getConnection(
-                    properties.getProperty("db.url"),
-                    properties.getProperty("db.username"),
-                    properties.getProperty("db.password")
+                    DB_URL,
+                    DB_USERNAME,
+                    DB_PASSWORD
             );
 
         } catch (SQLException e) {
@@ -249,7 +241,8 @@ public class JdbcModel implements Model {
                                 resultSet.getObject("description", String.class),
                                 new Location(resultSet.getObject("location", String.class)),
                                 resultSet.getObject("start_dt", LocalDateTime.class),
-                                resultSet.getObject("end_dt", LocalDateTime.class)
+                                resultSet.getObject("end_dt", LocalDateTime.class),
+                                new LinkedList<>()
                         )
                 );
             }
@@ -377,7 +370,8 @@ public class JdbcModel implements Model {
                                     resultSet.getObject("description", String.class),
                                     new Location(resultSet.getObject("location", String.class)),
                                     resultSet.getObject("start_dt", LocalDateTime.class),
-                                    resultSet.getObject("end_dt", LocalDateTime.class)
+                                    resultSet.getObject("end_dt", LocalDateTime.class),
+                                    new LinkedList<>()
                             )
                     )
             );
