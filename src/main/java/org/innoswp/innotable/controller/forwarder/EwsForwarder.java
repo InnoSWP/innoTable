@@ -11,32 +11,43 @@ import org.innoswp.innotable.model.Pair;
 import org.innoswp.innotable.model.event.CalendarEvent;
 import org.innoswp.innotable.model.user.Group;
 import org.innoswp.innotable.model.user.User;
-import org.springframework.beans.factory.annotation.Value;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 @Slf4j
 public class EwsForwarder implements EventForwarder {
+
+    private static final Properties properties = new Properties();
+
+    static {
+        try {
+            properties.load(new BufferedReader(new FileReader("src/main/resources/application.properties")));
+        } catch (IOException e) {
+            log.error("Cannot read from application.properties file");
+            throw new RuntimeException(e);
+        }
+
+    }
+
     private final ExchangeService service = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
 
     private final Model model;
 
-    @Value("${ews.service.url}")
-    private String SERVICE_URL;
+    private final String SERVICE_URL = properties.getProperty("ews.service.url");
 
-    @Value("${ews.service.email}")
-    private String SERVICE_EMAIL;
+    private final String SERVICE_EMAIL = properties.getProperty("ews.service.email");
 
-    @Value("${ews.service.password}")
-    private String SERVICE_PASSWORD;
+    private final String SERVICE_PASSWORD = properties.getProperty("ews.service.password");
 
-    public EwsForwarder(Model model) {
-        this.model = model;
-
+    {
         service.setUrl(URI.create(SERVICE_URL));
 
         service.setCredentials(new WebCredentials(
@@ -47,6 +58,10 @@ public class EwsForwarder implements EventForwarder {
         service.setPreAuthenticate(true);
 
         log.info("Configuration of EwsForwarder service completed");
+    }
+
+    public EwsForwarder(Model model) {
+        this.model = model;
     }
 
     @Override

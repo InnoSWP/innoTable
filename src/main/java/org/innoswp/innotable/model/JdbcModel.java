@@ -6,70 +6,85 @@ import org.innoswp.innotable.model.event.Location;
 import org.innoswp.innotable.model.user.Group;
 import org.innoswp.innotable.model.user.Role;
 import org.innoswp.innotable.model.user.User;
-import org.springframework.beans.factory.annotation.Value;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 @Slf4j
 public class JdbcModel implements Model {
-    public JdbcModel() throws SQLException {
-        var setupQuery = """                               
-                CREATE TABLE IF NOT EXISTS "group"(
-                    id SERIAL PRIMARY KEY,
-                    label VARCHAR(63) UNIQUE NOT NULL
-                );
 
-                CREATE TABLE IF NOT EXISTS role(
-                    id SERIAL PRIMARY KEY,
-                    label VARCHAR(63) UNIQUE NOT NULL
-                );
+    private static final Properties properties = new Properties();
 
-                CREATE TABLE IF NOT EXISTS "user"(
-                    id SERIAL PRIMARY KEY,
-                    email VARCHAR(63) UNIQUE NOT NULL,
-                    password VARCHAR(63) NOT NULL,
-                    role_id INT REFERENCES role (id)
-                );
+    static {
+        try {
+            properties.load(new BufferedReader(new FileReader("src/main/resources/application.properties")));
+        } catch (IOException e) {
+            log.error("Cannot read from application.properties file");
+            throw new RuntimeException(e);
+        }
+    }
 
-                CREATE TABLE IF NOT EXISTS event(
-                    id SERIAL PRIMARY KEY,
-                    title VARCHAR(255) NOT NULL,
-                    description TEXT,
-                    location VARCHAR(255),
-                    start_dt TIMESTAMP NOT NULL,
-                    end_dt TIMESTAMP NOT NULL,
-                    group_id INT REFERENCES "group"(id) ON DELETE CASCADE
-                );
+    private final String DB_URL = properties.getProperty("db.url");
 
-                CREATE TABLE IF NOT EXISTS user_group(
-                    user_id INT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-                    group_id INT NOT NULL REFERENCES "group"(id) ON DELETE CASCADE
-                );
-                """;
+    private final String DB_USERNAME = properties.getProperty("db.username");
 
+    private final String DB_PASSWORD = properties.getProperty("db.password");
+
+    public JdbcModel() {
         try (
                 var connection = open();
                 var statement = connection.createStatement()
         ) {
+            var setupQuery = """                               
+                    CREATE TABLE IF NOT EXISTS "group"(
+                        id SERIAL PRIMARY KEY,
+                        label VARCHAR(63) UNIQUE NOT NULL
+                    );
+
+                    CREATE TABLE IF NOT EXISTS role(
+                        id SERIAL PRIMARY KEY,
+                        label VARCHAR(63) UNIQUE NOT NULL
+                    );
+
+                    CREATE TABLE IF NOT EXISTS "user"(
+                        id SERIAL PRIMARY KEY,
+                        email VARCHAR(63) UNIQUE NOT NULL,
+                        password VARCHAR(63) NOT NULL,
+                        role_id INT REFERENCES role (id)
+                    );
+
+                    CREATE TABLE IF NOT EXISTS event(
+                        id SERIAL PRIMARY KEY,
+                        title VARCHAR(255) NOT NULL,
+                        description TEXT,
+                        location VARCHAR(255),
+                        start_dt TIMESTAMP NOT NULL,
+                        end_dt TIMESTAMP NOT NULL,
+                        group_id INT REFERENCES "group"(id) ON DELETE CASCADE
+                    );
+
+                    CREATE TABLE IF NOT EXISTS user_group(
+                        user_id INT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+                        group_id INT NOT NULL REFERENCES "group"(id) ON DELETE CASCADE
+                    );
+                    """;
+
             statement.execute(setupQuery);
             log.trace("Created JdbcModel instance");
+
+        } catch (Exception e) {
+            log.error("Cannot create JdbcModel instance");
         }
     }
 
-    @Value("${db.url}")
-    private static String DB_URL;
-
-    @Value("${db.username}")
-    private static String DB_USERNAME;
-
-    @Value("${db.password}")
-    private static String DB_PASSWORD;
-
-    private static Connection open() {
+    private Connection open() {
         try {
             return DriverManager.getConnection(
                     DB_URL,
@@ -241,8 +256,7 @@ public class JdbcModel implements Model {
                                 resultSet.getObject("description", String.class),
                                 new Location(resultSet.getObject("location", String.class)),
                                 resultSet.getObject("start_dt", LocalDateTime.class),
-                                resultSet.getObject("end_dt", LocalDateTime.class),
-                                new LinkedList<>()
+                                resultSet.getObject("end_dt", LocalDateTime.class)
                         )
                 );
             }
@@ -370,8 +384,7 @@ public class JdbcModel implements Model {
                                     resultSet.getObject("description", String.class),
                                     new Location(resultSet.getObject("location", String.class)),
                                     resultSet.getObject("start_dt", LocalDateTime.class),
-                                    resultSet.getObject("end_dt", LocalDateTime.class),
-                                    new LinkedList<>()
+                                    resultSet.getObject("end_dt", LocalDateTime.class)
                             )
                     )
             );

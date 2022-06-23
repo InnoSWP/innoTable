@@ -1,12 +1,14 @@
 package org.innoswp.innotable.model.event;
 
 import lombok.AllArgsConstructor;
-import org.innoswp.innotable.model.user.Group;
+import lombok.Getter;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class AdminEvent {
@@ -17,19 +19,26 @@ public class AdminEvent {
     private String startTime;
     private String endDate;
     private String endTime;
+
+    @Getter
     private List<String> groups;
 
-    public CalendarEvent toCalendarEvent() {
-        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public CalendarEvent toCalendarEvent() throws ParseException {
+        var formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
         return new CalendarEvent(
                 name,
                 description,
                 new Location(location),
-                LocalDateTime.parse(startDate + " " + startTime, formatter),
-                LocalDateTime.parse(endDate + " " + endDate, formatter),
-                groups.stream().map(Group::new).collect(Collectors.toList())
+                toLocalDateTime(formatter.parse(startDate + " " + startTime)),
+                toLocalDateTime(formatter.parse(endDate + " " + endTime))
         );
+    }
+
+    private LocalDateTime toLocalDateTime(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     @Override
