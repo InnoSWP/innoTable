@@ -15,25 +15,16 @@ name: Lint Code Base
 # Start the job on all push #
 #############################
 on:
+  push:
+    branches-ignore: [ repo-settings, main ]
+    # Remove the line above to run when pushing to master
   pull_request:
-    branches: [repo-settings, main]
+    branches: [ repo-settings, main ]
 
 ###############
 # Set the Job #
 ###############
 jobs:
-  sonarcloud:
-    name: SonarCloud
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     # Name the Job
     name: Lint Code Base
@@ -60,5 +51,5 @@ jobs:
         uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: repo-settings
+          DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
