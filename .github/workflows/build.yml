@@ -1,12 +1,10 @@
 name: Build
 on:
   push:
-    branches:
-      - repo-settings
+    branches: [repo-settings, main]
   pull_request:
     types: [ opened, synchronize, reopened ]
-    branches:
-      - repo-settings
+    branches: [repo-settings, main]
 jobs:
   sonarcloud:
     name: SonarCloud
