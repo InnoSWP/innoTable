@@ -5,9 +5,6 @@ import lombok.Getter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -29,16 +26,10 @@ public class AdminEvent {
         return new CalendarEvent(
                 name,
                 description,
-                new Location(location),
-                toLocalDateTime(formatter.parse(startDate + " " + startTime)),
-                toLocalDateTime(formatter.parse(endDate + " " + endTime))
+                location,
+                formatter.parse(startDate + " " + startTime),
+                formatter.parse(endDate + " " + endTime)
         );
-    }
-
-    private LocalDateTime toLocalDateTime(Date dateToConvert) {
-        return dateToConvert.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
     }
 
     @Override

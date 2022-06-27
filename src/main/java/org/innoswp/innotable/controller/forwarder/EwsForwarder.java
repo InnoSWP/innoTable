@@ -8,17 +8,13 @@ import microsoft.exchange.webservices.data.credential.WebCredentials;
 import microsoft.exchange.webservices.data.property.complex.MessageBody;
 import org.innoswp.innotable.model.Model;
 import org.innoswp.innotable.model.Pair;
+import org.innoswp.innotable.model.User;
 import org.innoswp.innotable.model.event.CalendarEvent;
-import org.innoswp.innotable.model.user.Group;
-import org.innoswp.innotable.model.user.User;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -77,23 +73,19 @@ public class EwsForwarder implements EventForwarder {
     }
 
     @Override
-    public void pushEventsForGroup(Group group, List<CalendarEvent> groupEvents) throws Exception {
+    public void pushEventsForGroup(String group, List<CalendarEvent> groupEvents) throws Exception {
         for (var user : model.getUsersByGroup(group))
             pushEventForUser(user, groupEvents);
 
-        log.info("Pushed events for group " + group.label());
+        log.info("Pushed events for group " + group);
     }
 
     @Override
-    public void pushAllEvents(List<Pair<Group, List<CalendarEvent>>> events) throws Exception {
+    public void pushAllEvents(List<Pair<String, List<CalendarEvent>>> events) throws Exception {
         for (var pair : events)
             pushEventsForGroup(pair.first(), pair.second());
 
         log.info("Pushed all events");
-    }
-
-    private Date toDate(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     private Appointment createAppointment(CalendarEvent event) throws Exception {
@@ -102,10 +94,10 @@ public class EwsForwarder implements EventForwarder {
         appointment.setSubject(event.title());
         appointment.setBody(MessageBody.getMessageBodyFromText(event.description()));
 
-        appointment.setLocation(event.location().label());
+        appointment.setLocation(event.location());
 
-        appointment.setStart(toDate(event.startTime()));
-        appointment.setEnd(toDate(event.endTime()));
+        appointment.setStart(event.startTime());
+        appointment.setEnd(event.endTime());
 
         return appointment;
     }
