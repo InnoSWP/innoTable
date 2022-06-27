@@ -2,10 +2,6 @@ package org.innoswp.innotable.model;
 
 import lombok.extern.slf4j.Slf4j;
 import org.innoswp.innotable.model.event.CalendarEvent;
-import org.innoswp.innotable.model.event.Location;
-import org.innoswp.innotable.model.user.Group;
-import org.innoswp.innotable.model.user.Role;
-import org.innoswp.innotable.model.user.User;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -99,13 +95,13 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Group> getGroups() throws SQLException {
+    public List<String> getGroups() throws SQLException {
         var query = """
                 SELECT label
                 FROM "group"
                 """;
 
-        var response = new LinkedList<Group>();
+        var response = new LinkedList<String>();
 
         try (
                 var connection = open();
@@ -114,7 +110,7 @@ public class JdbcModel implements Model {
             var resultSet = statement.executeQuery(query);
 
             while (resultSet.next())
-                response.add(new Group(resultSet.getObject("label", String.class)));
+                response.add(resultSet.getObject("label", String.class));
         }
 
         log.trace("Loaded groups list");
@@ -122,7 +118,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public void saveGroup(Group group) throws SQLException {
+    public void saveGroup(String group) throws SQLException {
         var query = """
                 INSERT INTO "group" (label)
                 VALUES (?)
@@ -131,15 +127,15 @@ public class JdbcModel implements Model {
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setString(1, group.label());
+            preparedStatement.setString(1, group);
             preparedStatement.execute();
         }
 
-        log.trace("Saved group " + group.label());
+        log.trace("Saved group " + group);
     }
 
     @Override
-    public Group dropGroup(Group group) throws SQLException {
+    public String dropGroup(String group) throws SQLException {
         var query = """
                 DELETE FROM "group"
                 WHERE label = ?
@@ -149,26 +145,26 @@ public class JdbcModel implements Model {
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setString(1, group.label());
+            preparedStatement.setString(1, group);
             var resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                log.trace("Dropped group " + group.label());
-                return new Group(resultSet.getObject("label", String.class));
+                log.trace("Dropped group " + group);
+                return resultSet.getObject("label", String.class);
             }
         }
 
-        log.warn("In dropGroup query group " + group.label() + " does not exist, returning null!");
+        log.warn("In dropGroup query group " + group + " does not exist, returning null!");
         return null;
     }
 
     @Override
-    public List<Role> getRoles() throws SQLException {
+    public List<String> getRoles() throws SQLException {
         var query = """
                 SELECT label
                 FROM role
                 """;
-        List<Role> result = new LinkedList<>();
+        var result = new LinkedList<String>();
         try (
                 var connection = open();
                 var statement = connection.createStatement()
@@ -176,7 +172,7 @@ public class JdbcModel implements Model {
             var resultSet = statement.executeQuery(query);
 
             while (resultSet.next())
-                result.add(new Role(resultSet.getObject("label", String.class)));
+                result.add(resultSet.getObject("label", String.class));
         }
 
         log.trace("Loaded roles list");
@@ -185,7 +181,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public void saveRole(Role role) throws SQLException {
+    public void saveRole(String role) throws SQLException {
         var query = """
                 INSERT INTO role (label)
                 VALUES (?)
@@ -194,15 +190,15 @@ public class JdbcModel implements Model {
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setString(1, role.label());
+            preparedStatement.setString(1, role);
             preparedStatement.execute();
         }
 
-        log.trace("Saved role " + role.label());
+        log.trace("Saved role " + role);
     }
 
     @Override
-    public void saveEvent(CalendarEvent event, Group group) throws SQLException {
+    public void saveEvent(CalendarEvent event, String group) throws SQLException {
         var query = """
                 INSERT INTO event(title, description, location, start_dt, end_dt, group_id)
                 VALUES (?, ?, ?, ?, ?, (SELECT id FROM "group" WHERE label = ?))
@@ -213,21 +209,21 @@ public class JdbcModel implements Model {
         ) {
             preparedStatement.setString(1, event.title());
             preparedStatement.setString(2, event.description());
-            preparedStatement.setString(3, event.location().label());
+            preparedStatement.setString(3, event.location());
 
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(event.startTime()));
-            preparedStatement.setTimestamp(5, Timestamp.valueOf(event.endTime()));
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(event.startTime().toString()));
+            preparedStatement.setTimestamp(5, Timestamp.valueOf(event.endTime().toString()));
 
-            preparedStatement.setString(6, group.label());
+            preparedStatement.setString(6, group);
 
             preparedStatement.execute();
 
-            log.trace("Saved event for group " + group.label());
+            log.trace("Saved event for group " + group);
         }
     }
 
     @Override
-    public Pair<Group, CalendarEvent> dropEvent(String title) throws SQLException {
+    public Pair<String, CalendarEvent> dropEvent(String title) throws SQLException {
         var query = """
                 DELETE FROM event
                 WHERE title = ?
@@ -249,14 +245,14 @@ public class JdbcModel implements Model {
                 log.trace("Dropped event by its title: " + title);
 
                 return new Pair<>(
-                        new Group(resultSet.getObject("grp", String.class)),
+                        resultSet.getObject("grp", String.class),
 
                         new CalendarEvent(
                                 resultSet.getObject("title", String.class),
                                 resultSet.getObject("description", String.class),
-                                new Location(resultSet.getObject("location", String.class)),
-                                resultSet.getObject("start_dt", LocalDateTime.class),
-                                resultSet.getObject("end_dt", LocalDateTime.class)
+                                resultSet.getObject("location", String.class),
+                                resultSet.getObject("start_dt", Date.class),
+                                resultSet.getObject("end_dt", Date.class)
                         )
                 );
             }
@@ -267,17 +263,17 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<Group, CalendarEvent>> loadEventsByUser(User user) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsByUser(User user) throws Exception {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
                 WHERE (SELECT label FROM "group" WHERE event.group_id = id) = ?
                 """;
-        var events = new LinkedList<Pair<Group, CalendarEvent>>();
+        var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (var connection = open()) {
-            for (var group : user.group()) {
+            for (var group : user.groups()) {
                 try (var preparedStatement = connection.prepareStatement(query)) {
-                    preparedStatement.setString(1, group.label());
+                    preparedStatement.setString(1, group);
                     formEventList(events, preparedStatement.executeQuery());
                 }
             }
@@ -288,27 +284,27 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<Group, CalendarEvent>> loadEventsByGroup(Group group) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsByGroup(String group) throws Exception {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
                 WHERE (SELECT label FROM "group" WHERE event.group_id = id) = ?
                 """;
-        var events = new LinkedList<Pair<Group, CalendarEvent>>();
+        var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setString(1, group.label());
+            preparedStatement.setString(1, group);
             formEventList(events, preparedStatement.executeQuery());
         }
 
-        log.trace("Loaded events list by the given group: " + group.label());
+        log.trace("Loaded events list by the given group: " + group);
         return events;
     }
 
     @Override
-    public List<Pair<Group, CalendarEvent>> loadEventsByDay(LocalDate date) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsByDay(LocalDate date) throws Exception {
 
         log.trace("Loaded events list by the given day: " + date);
         return getEventsFromInterval(
@@ -318,7 +314,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<Group, CalendarEvent>> loadEventsIn(LocalDateTime start, LocalDateTime end)
+    public List<Pair<String, CalendarEvent>> loadEventsIn(LocalDateTime start, LocalDateTime end)
             throws Exception {
 
         log.trace("Loaded events list by the given duration: " + start + " - " + end);
@@ -326,19 +322,19 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<Group, CalendarEvent>> loadEventsDuring(LocalDateTime time) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsDuring(LocalDateTime time) throws Exception {
         log.trace("Loaded actual events list by the given time: " + time);
         return getEventsFromInterval(time, time);
     }
 
-    private List<Pair<Group, CalendarEvent>> getEventsFromInterval(LocalDateTime start, LocalDateTime end)
+    private List<Pair<String, CalendarEvent>> getEventsFromInterval(LocalDateTime start, LocalDateTime end)
             throws SQLException {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
                 WHERE start_dt <= ? AND ? <= end_dt;
                 """;
-        var events = new LinkedList<Pair<Group, CalendarEvent>>();
+        var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
@@ -354,13 +350,13 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public LinkedList<Pair<Group, CalendarEvent>> loadEventsByTitle(String title) throws SQLException {
+    public LinkedList<Pair<String, CalendarEvent>> loadEventsByTitle(String title) throws SQLException {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
                 WHERE title = ?;
                 """;
-        var events = new LinkedList<Pair<Group, CalendarEvent>>();
+        var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
@@ -374,31 +370,31 @@ public class JdbcModel implements Model {
         return events;
     }
 
-    private void formEventList(LinkedList<Pair<Group, CalendarEvent>> events, ResultSet resultSet)
+    private void formEventList(LinkedList<Pair<String, CalendarEvent>> events, ResultSet resultSet)
             throws SQLException {
         while (resultSet.next())
             events.add(new Pair<>(
-                            new Group(resultSet.getObject("group", String.class)),
+                            resultSet.getObject("group", String.class),
                             new CalendarEvent(
                                     resultSet.getObject("title", String.class),
                                     resultSet.getObject("description", String.class),
-                                    new Location(resultSet.getObject("location", String.class)),
-                                    resultSet.getObject("start_dt", LocalDateTime.class),
-                                    resultSet.getObject("end_dt", LocalDateTime.class)
+                                    resultSet.getObject("location", String.class),
+                                    resultSet.getObject("start_dt", Date.class),
+                                    resultSet.getObject("end_dt", Date.class)
                             )
                     )
             );
     }
 
     @Override
-    public List<Pair<Group, CalendarEvent>> loadAllEvents() throws SQLException {
+    public List<Pair<String, CalendarEvent>> loadAllEvents() throws SQLException {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
                 ORDER BY start_dt;
                 """;
 
-        var events = new LinkedList<Pair<Group, CalendarEvent>>();
+        var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
@@ -429,14 +425,14 @@ public class JdbcModel implements Model {
         ) {
             preparedStatement.setString(1, user.email());
             preparedStatement.setString(2, user.password());
-            preparedStatement.setString(3, user.role().label());
+            preparedStatement.setString(3, user.role());
 
             preparedStatement.execute();
 
-            for (Group group : user.group())
+            for (var group : user.groups())
                 try (var pStatement = connection.prepareStatement(secondQuery)) {
                     pStatement.setString(1, user.email());
-                    pStatement.setString(2, group.label());
+                    pStatement.setString(2, group);
                     pStatement.execute();
                 }
         }
@@ -445,7 +441,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public void assignUsersToGroup(List<User> users, Group group) throws SQLException {
+    public void assignUsersToGroup(List<User> users, String group) throws SQLException {
         var query = """
                 INSERT INTO user_group(user_id, group_id)
                 VALUES ((SELECT id FROM "user" WHERE email = ?), (SELECT id FROM "group" WHERE label = ?))
@@ -453,17 +449,17 @@ public class JdbcModel implements Model {
 
         try (var connection = open()) {
             for (User user : users) {
-                user.group().add(group);
+                user.groups().add(group);
 
                 try (var pStatement = connection.prepareStatement(query)) {
                     pStatement.setString(1, user.email());
-                    pStatement.setString(2, group.label());
+                    pStatement.setString(2, group);
                     pStatement.execute();
                 }
             }
         }
 
-        log.trace("Assigned list of users to the group: " + group.label());
+        log.trace("Assigned list of users to the group: " + group);
     }
 
     @Override
@@ -491,7 +487,7 @@ public class JdbcModel implements Model {
                         resultSet.getObject("email", String.class),
                         resultSet.getObject("password", String.class),
                         new LinkedList<>(),
-                        new Role(resultSet.getObject("rl", String.class))
+                        resultSet.getObject("rl", String.class)
                 );
             }
         }
@@ -522,7 +518,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<User> getUsersByGroup(Group group) throws SQLException {
+    public List<User> getUsersByGroup(String group) throws SQLException {
         var query = """
                 SELECT email, password, (SELECT label FROM "role" WHERE "role".id = "user".role_id) rl FROM "user"
                                          WHERE id IN (SELECT user_id FROM user_group
@@ -534,12 +530,12 @@ public class JdbcModel implements Model {
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setString(1, group.label());
+            preparedStatement.setString(1, group);
             var resultSet = preparedStatement.executeQuery();
             getUsersFromResultSet(users, connection, resultSet);
         }
 
-        log.trace("Loaded users by the given group: " + group.label());
+        log.trace("Loaded users by the given group: " + group);
         return users;
     }
 
@@ -558,14 +554,14 @@ public class JdbcModel implements Model {
                     resultSet.getObject("email", String.class),
                     resultSet.getObject("password", String.class),
                     new LinkedList<>(),
-                    new Role(resultSet.getObject("rl", String.class))
+                    resultSet.getObject("rl", String.class)
             );
 
             try (var pStatement = connection.prepareStatement(query)) {
                 pStatement.setString(1, user.email());
                 var resultSet1 = pStatement.executeQuery();
                 while (resultSet1.next())
-                    user.group().add(new Group(resultSet1.getObject("label", String.class)));
+                    user.groups().add(resultSet1.getObject("label", String.class));
             }
 
             users.add(user);
@@ -573,7 +569,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<User> getUsersByRole(Role role) throws SQLException {
+    public List<User> getUsersByRole(String role) throws SQLException {
         var query = """
                 SELECT email, password, (SELECT label FROM "role" WHERE "role".id = "user".role_id) rl FROM "user"
                                          WHERE role_id = (SELECT id FROM role
@@ -584,12 +580,12 @@ public class JdbcModel implements Model {
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setString(1, role.label());
+            preparedStatement.setString(1, role);
             var resultSet = preparedStatement.executeQuery();
             getUsersFromResultSet(users, connection, resultSet);
         }
 
-        log.trace("Loaded users by the given role: " + role.label());
+        log.trace("Loaded users by the given role: " + role);
         return users;
     }
 }
