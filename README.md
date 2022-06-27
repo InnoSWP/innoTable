@@ -4,6 +4,10 @@
 
 ![Use-case diagram](https://i.imgur.com/wPP2NUc.png)
 
-## Architecture diagram
+## Static architecture diagram
 
-![Architecture](https://i.imgur.com/v90RhEd.png)
+![Static view on architecture](https://i.imgur.com/v90RhEd.png)
+
+## Dynamic architecture diagram
+
+![Static view on architecture](https://i.imgur.com/SFmUJfA.png)
