@@ -2,92 +2,39 @@ package org.innoswp.innotable.model;
 
 import lombok.extern.slf4j.Slf4j;
 import org.innoswp.innotable.model.event.CalendarEvent;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 
 @Slf4j
 @Repository
 public class JdbcModel implements Model {
 
-    private static final Properties properties = new Properties();
+    private final String datasourceUrl;
 
-    static {
-        try {
-            properties.load(new BufferedReader(new FileReader("src/main/resources/application.properties")));
-        } catch (IOException e) {
-            log.error("Cannot read from application.properties file");
-            throw new RuntimeException(e);
-        }
-    }
+    private final String datasourceUsername;
 
-    private final String DB_URL = properties.getProperty("db.url");
+    private final String datasourcePassword;
 
-    private final String DB_USERNAME = properties.getProperty("db.username");
-
-    private final String DB_PASSWORD = properties.getProperty("db.password");
-
-    public JdbcModel() {
-        try (
-                var connection = open();
-                var statement = connection.createStatement()
-        ) {
-            var setupQuery = """                               
-                    CREATE TABLE IF NOT EXISTS "group"(
-                        id SERIAL PRIMARY KEY,
-                        label VARCHAR(63) UNIQUE NOT NULL
-                    );
-
-                    CREATE TABLE IF NOT EXISTS role(
-                        id SERIAL PRIMARY KEY,
-                        label VARCHAR(63) UNIQUE NOT NULL
-                    );
-
-                    CREATE TABLE IF NOT EXISTS "user"(
-                        id SERIAL PRIMARY KEY,
-                        email VARCHAR(63) UNIQUE NOT NULL,
-                        password VARCHAR(63) NOT NULL,
-                        role_id INT REFERENCES role (id)
-                    );
-
-                    CREATE TABLE IF NOT EXISTS event(
-                        id SERIAL PRIMARY KEY,
-                        title VARCHAR(255) NOT NULL,
-                        description TEXT,
-                        location VARCHAR(255),
-                        start_dt TIMESTAMP NOT NULL,
-                        end_dt TIMESTAMP NOT NULL,
-                        group_id INT REFERENCES "group"(id) ON DELETE CASCADE
-                    );
-
-                    CREATE TABLE IF NOT EXISTS user_group(
-                        user_id INT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-                        group_id INT NOT NULL REFERENCES "group"(id) ON DELETE CASCADE
-                    );
-                    """;
-
-            statement.execute(setupQuery);
-            log.trace("Created JdbcModel instance");
-
-        } catch (Exception e) {
-            log.error("Cannot create JdbcModel instance");
-        }
+    public JdbcModel(@Value("${spring.datasource.url}") String datasourceUrl,
+                     @Value("${spring.datasource.username}") String datasourceUsername,
+                     @Value("${spring.datasource.password}") String datasourcePassword) {
+        this.datasourceUrl = datasourceUrl;
+        this.datasourceUsername = datasourceUsername;
+        this.datasourcePassword = datasourcePassword;
     }
 
     private Connection open() {
         try {
             return DriverManager.getConnection(
-                    DB_URL,
-                    DB_USERNAME,
-                    DB_PASSWORD
+                    datasourceUrl,
+                    datasourceUsername,
+                    datasourcePassword
             );
 
         } catch (SQLException e) {

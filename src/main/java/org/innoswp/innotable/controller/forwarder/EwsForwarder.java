@@ -6,44 +6,29 @@ import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion
 import microsoft.exchange.webservices.data.core.service.item.Appointment;
 import microsoft.exchange.webservices.data.credential.WebCredentials;
 import microsoft.exchange.webservices.data.property.complex.MessageBody;
-import org.innoswp.innotable.model.Model;
+import org.innoswp.innotable.model.JdbcModel;
 import org.innoswp.innotable.model.Pair;
 import org.innoswp.innotable.model.User;
 import org.innoswp.innotable.model.event.CalendarEvent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import java.util.Properties;
 
 @Slf4j
+@Component
 public class EwsForwarder implements EventForwarder {
-
-    private static final Properties properties = new Properties();
-
-    static {
-        try {
-            properties.load(new BufferedReader(new FileReader("src/main/resources/application.properties")));
-        } catch (IOException e) {
-            log.error("Cannot read from application.properties file");
-            throw new RuntimeException(e);
-        }
-
-    }
 
     private final ExchangeService service = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
 
-    private final Model model;
+    @Autowired
+    private JdbcModel model;
 
-    private final String serviceUrl = properties.getProperty("ews.service.url");
-
-    private final String serviceEmail = properties.getProperty("ews.service.email");
-
-    private final String servicePassword = properties.getProperty("ews.service.password");
-
-    {
+    public EwsForwarder(@Value("${ews.service.url}") String serviceUrl,
+                        @Value("${ews.service.email}") String serviceEmail,
+                        @Value("${ews.service.password}") String servicePassword) {
         service.setUrl(URI.create(serviceUrl));
 
         service.setCredentials(new WebCredentials(
@@ -54,10 +39,6 @@ public class EwsForwarder implements EventForwarder {
         service.setPreAuthenticate(true);
 
         log.info("Configuration of EwsForwarder service completed");
-    }
-
-    public EwsForwarder(Model model) {
-        this.model = model;
     }
 
     @Override
