@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innotabe+</title>
+
+    <link rel="stylesheet" href="calendar_editor.css">
+</head>
+
+<body>
+<div id="header" class="fixed-top navbar" style="position: absolute; inset: 0px 0px auto; height: 50px; width: auto">
+    <div class="block-1">
+        <span class="inline-1">Information</span>
+        <span class="inline-2">DoEMember17</span>
+    </div>
+</div>
+
+<div>
+    <div class="smallBlock">
+        <div class="smallBlockWithoutBoundings">
+            <div class="smallBlockCalendar">
+                <div class="smallCalendar">
+                    <div id="smallCalendarHeader">
+
+                    </div>
+
+                    <div id="smallCalendarWeekdays">
+                        <div>M</div>
+                        <div>T</div>
+                        <div>W</div>
+                        <div>T</div>
+                        <div>F</div>
+                        <div>S</div>
+                        <div>S</div>
+                    </div>
+
+                    <div id="smallCalendarBody">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bigBlock">
+        <div class="bigBlockWithoutBoundings">
+            <div class="bigCalendar">
+                <div id="bigCalendarHeader">
+                    <div>
+                        <button class="arrow" id="backButton"><</button>
+                        <button class="arrow" id="nextButton">></button>
+                    </div>
+                    <div id="monthDisplay"></div>
+                </div>
+
+                <div id="bigCalendarWeekdays">
+                    <div>Monday</div>
+                    <div>Tuesday</div>
+                    <div>Wednesday</div>
+                    <div>Thursday</div>
+                    <div>Friday</div>
+                    <div>Saturday</div>
+                    <div>Sunday</div>
+                </div>
+
+                <div id="bigCalendarBody">
+
+                </div>
+            </div>
+
+
+            <!-- Event Creation Block -->
+            <div id="newEventModal">
+                <h2 id="title">New Event</h2>
+
+                <input id="eventTitleInput" placeholder="Add event name"/>
+                <input id="eventPlace" placeholder="Add event place"/>
+                <span>
+            <input class="time" id="timeStart" type="time"/>
+            <input class="time" id="timeEnd" type="time"/>
+          </span>
+                <select id="select">
+                    <option>bachelor</option>
+                    <option>master</option>
+                    <option>phd</option>
+                </select>
+
+
+                <button id="saveButton">Save</button>
+                <button id="cancelButton">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Black overlay on top of the main screen to draw attention to the event creation and viewing blocks -->
+<div id="modalBackDrop"></div>
+<script src="js/update_calendar.js"></script>
+
+</body>
+
+</html>
