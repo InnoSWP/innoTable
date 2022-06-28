@@ -37,18 +37,18 @@ public class EwsForwarder implements EventForwarder {
 
     private final Model model;
 
-    private final String SERVICE_URL = properties.getProperty("ews.service.url");
+    private final String serviceUrl = properties.getProperty("ews.service.url");
 
-    private final String SERVICE_EMAIL = properties.getProperty("ews.service.email");
+    private final String serviceEmail = properties.getProperty("ews.service.email");
 
-    private final String SERVICE_PASSWORD = properties.getProperty("ews.service.password");
+    private final String servicePassword = properties.getProperty("ews.service.password");
 
     {
-        service.setUrl(URI.create(SERVICE_URL));
+        service.setUrl(URI.create(serviceUrl));
 
         service.setCredentials(new WebCredentials(
-                SERVICE_EMAIL,
-                SERVICE_PASSWORD
+                serviceEmail,
+                servicePassword
         ));
 
         service.setPreAuthenticate(true);
