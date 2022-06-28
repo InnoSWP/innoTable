@@ -2,6 +2,7 @@ package org.innoswp.innotable.model;
 
 import lombok.extern.slf4j.Slf4j;
 import org.innoswp.innotable.model.event.CalendarEvent;
+import org.springframework.stereotype.Repository;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Properties;
 
 @Slf4j
+@Repository
 public class JdbcModel implements Model {
 
     private static final Properties properties = new Properties();
