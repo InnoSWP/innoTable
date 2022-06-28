@@ -33,6 +33,8 @@ public class JdbcModel implements Model {
 
     private final String DB_PASSWORD = properties.getProperty("db.password");
 
+    private final String LABEL = "label";
+
     public JdbcModel() {
         try (
                 var connection = open();
@@ -110,7 +112,7 @@ public class JdbcModel implements Model {
             var resultSet = statement.executeQuery(query);
 
             while (resultSet.next())
-                response.add(resultSet.getObject("label", String.class));
+                response.add(resultSet.getObject(LABEL, String.class));
         }
 
         log.trace("Loaded groups list");
@@ -150,7 +152,7 @@ public class JdbcModel implements Model {
 
             if (resultSet.next()) {
                 log.trace("Dropped group " + group);
-                return resultSet.getObject("label", String.class);
+                return resultSet.getObject(LABEL, String.class);
             }
         }
 
@@ -172,7 +174,7 @@ public class JdbcModel implements Model {
             var resultSet = statement.executeQuery(query);
 
             while (resultSet.next())
-                result.add(resultSet.getObject("label", String.class));
+                result.add(resultSet.getObject(LABEL, String.class));
         }
 
         log.trace("Loaded roles list");
@@ -263,7 +265,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsByUser(User user) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsByUser(User user) throws SQLException {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
@@ -284,7 +286,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsByGroup(String group) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsByGroup(String group) throws SQLException {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
@@ -304,7 +306,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsByDay(LocalDate date) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsByDay(LocalDate date) throws SQLException {
 
         log.trace("Loaded events list by the given day: " + date);
         return getEventsFromInterval(
@@ -315,14 +317,14 @@ public class JdbcModel implements Model {
 
     @Override
     public List<Pair<String, CalendarEvent>> loadEventsIn(LocalDateTime start, LocalDateTime end)
-            throws Exception {
+            throws SQLException {
 
         log.trace("Loaded events list by the given duration: " + start + " - " + end);
         return getEventsFromInterval(start, end);
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsDuring(LocalDateTime time) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsDuring(LocalDateTime time) throws SQLException {
         log.trace("Loaded actual events list by the given time: " + time);
         return getEventsFromInterval(time, time);
     }
@@ -561,7 +563,7 @@ public class JdbcModel implements Model {
                 pStatement.setString(1, user.email());
                 var resultSet1 = pStatement.executeQuery();
                 while (resultSet1.next())
-                    user.groups().add(resultSet1.getObject("label", String.class));
+                    user.groups().add(resultSet1.getObject(LABEL, String.class));
             }
 
             users.add(user);
