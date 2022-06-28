@@ -18,6 +18,7 @@ function getEvent() {
     let timeEnd = document.getElementById("time-end").value;
     let groups = getCheckedCheckBoxes('groups[]');
 
+
     let xhr = new XMLHttpRequest();
     xhr.open("PUT", "http://localhost:8080/api/create_event", true);
 
@@ -47,7 +48,7 @@ function getCheckedCheckBoxes(name) {
     let checkboxesChecked = [];
     for (let index = 0; index < checkboxes.length; index++) {
         if (checkboxes[index].checked) {
-            checkboxesChecked.push('"' + checkboxes[index].value + '"');
+            checkboxesChecked.push(checkboxes[index].value);
         }
     }
     return checkboxesChecked;
