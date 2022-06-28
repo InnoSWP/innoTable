@@ -1,251 +1,244 @@
-#header {                            /* Make a header at the top of the page and color it green */
-  background-color: var(--color_primary);
-  height: 50px;
-  font-size: 30px;
-  font-weight: bold;
+#header { /* Make a header at the top of the page and color it green */
+    background-color: var(--color_primary);
+    height: 50px;
+    font-size: 30px;
+    font-weight: bold;
 }
 
-.block-1 .inline-1{                 /* Pin Information from the left edge */
-  position: absolute;
-  top: 5px;
-  left: 10px;
+.block-1 .inline-1 { /* Pin Information from the left edge */
+    position: absolute;
+    top: 5px;
+    left: 10px;
 }
 
-.block-1 .inline-2 {             /* Pin DoEMember17 from the right edge */
-  position: absolute;
-  top: 5px;
-  right: 10px;
+.block-1 .inline-2 { /* Pin DoEMember17 from the right edge */
+    position: absolute;
+    top: 5px;
+    right: 10px;
 }
 
-.smallBlock {                   /* Place a small block on the left side */
-  position: absolute;
-  inset: 50px auto 0px 0px;
-  background-color: rgba(0, 255, 255, .133);
-  height: auto;
-  width: 210px;
+.smallBlock { /* Place a small block on the left side */
+    position: absolute;
+    inset: 50px auto 0 0;
+    background-color: rgba(0, 255, 255, .133);
+    height: auto;
+    width: 210px;
 }
 
-.smallBlockWithoutBoundings {                /* A small block without a top*/
-  position: absolute;
-  inset: 20px 0px 0px 0px;
-  background-color: rgba(28, 222, 96, .589);
-  height: auto;
-  width: auto;
+.smallBlockWithoutBoundings { /* A small block without a top*/
+    position: absolute;
+    inset: 20px 0 0 0;
+    background-color: rgba(28, 222, 96, .589);
+    height: auto;
+    width: auto;
 }
 
-.smallBlockCalendar {                   /* Calendar Block */
-  position: absolute;
-  inset: 0px 0px auto;
-  background-color: brown;
-  height: 243px;
-  width: auto;
+.smallBlockCalendar { /* Calendar Block */
+    position: absolute;
+    inset: 0 0 auto;
+    background-color: brown;
+    height: 243px;
+    width: auto;
 }
 
-.smallCalendar {                   /* Calendar block without edges */
-  position: absolute;
-  height: 238px;
-  width: 189px;
-  outline: none;
-  inset: 0px 0px 0px 9px;
-  background-color: rgb(64, 23, 23);
+.smallCalendar { /* Calendar block without edges */
+    position: absolute;
+    height: 238px;
+    width: 189px;
+    outline: none;
+    inset: 0 0 0 9px;
+    background-color: rgb(64, 23, 23);
 }
 
-#smallCalendarWeekdays {                 /* Arranges the days of the week in a small calendar in a row and sets the color */
-  width: 100%;
-  display: flex;
-  color: #247BA0;
+#smallCalendarWeekdays { /* Arranges the days of the week in a small calendar in a row and sets the color */
+    width: 100%;
+    display: flex;
+    color: #247BA0;
 }
 
-#smallCalendarWeekdays div {               /* Sets the margins for the days of the week in a small calendar */    
-  width: 100px;
-  padding: 5px;
+#smallCalendarWeekdays div { /* Sets the margins for the days of the week in a small calendar */
+    width: 100px;
+    padding: 5px;
 }
 
 
-
-
-
-
-
-
-.bigBlock {                  /* Place the large block on the right side */
-  position: absolute;
-  inset: 50px 0px 0px 210px;
-  background-color: white;
-  height: auto;
-  width: auto;
+.bigBlock { /* Place the large block on the right side */
+    position: absolute;
+    inset: 50px 0 0 210px;
+    background-color: white;
+    height: auto;
+    width: auto;
 }
 
-.bigBlockWithoutBoundings {              /* A small block without a top */
-  position: absolute;
-  inset: 20px 15% 0px 2%;
-  background-color: white;
-  height: auto;
-  width: auto;
+.bigBlockWithoutBoundings { /* A small block without a top */
+    position: absolute;
+    inset: 20px 15% 0 2%;
+    background-color: white;
+    height: auto;
+    width: auto;
 }
 
-#bigCalendarHeader {                    /* Sets the location of the title and buttons */
-  padding: 10px;
-  font-size: 26px;
-  font-family: sans-serif;
-  display: flex;
-  align-items: center;
+#bigCalendarHeader { /* Sets the location of the title and buttons */
+    padding: 10px;
+    font-size: 26px;
+    font-family: sans-serif;
+    display: flex;
+    align-items: center;
 }
 
-.arrow {                        /* Dies button borders and assigns size */
-  cursor: pointer;  
-  border: none;
-  background: none;
-  outline: none;
-  font-size: 26px;
-  font-weight: bold;
+.arrow { /* Dies button borders and assigns size */
+    cursor: pointer;
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 26px;
+    font-weight: bold;
 }
 
 #nextButton {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
-#bigCalendarWeekdays {                 /* Arranges the days of the week in a large calendar in a row and sets the color */
-  width: 100%;
-  display: flex;
-  color: #247BA0;
+#bigCalendarWeekdays { /* Arranges the days of the week in a large calendar in a row and sets the color */
+    width: 100%;
+    display: flex;
+    color: #247BA0;
 }
 
-#bigCalendarWeekdays div {               /* Sets the margins for the days of the week in a large calendar */    
-  width: 14.28%;
-  height: 50px;
-  text-align: center;
-  line-height: 50px;
-  background-color: aquamarine;
+#bigCalendarWeekdays div { /* Sets the margins for the days of the week in a large calendar */
+    width: 14.28%;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    background-color: aquamarine;
 }
 
-#bigCalendarBody {                 /* Arranges blocks with numbers in the right order */
-  width: 100%;
-  margin: auto;
-  display: flex;
-  flex-wrap: wrap;
+#bigCalendarBody { /* Arranges blocks with numbers in the right order */
+    width: 100%;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.day {                          /* Sets the size of blocks and borders */
-  width: 14.28%;
-  padding: .5%;
-  font-size: 20px;
-  height: 93.8px;
-  cursor: pointer;
-  box-sizing: border-box;
-  background-color: white;
-  box-shadow: 0px 0px 3px #CBD4C2;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.day { /* Sets the size of blocks and borders */
+    width: 14.28%;
+    padding: .5%;
+    font-size: 20px;
+    height: 94px;
+    cursor: pointer;
+    box-sizing: border-box;
+    background-color: white;
+    box-shadow: 0 0 3px #CBD4C2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.event {                      /* Event design after saving */
-  font-size: 10px;
-  padding: 2px;
-  background-color: #58bae4;
-  color: white;
-  border-radius: 5px;
-  max-height: 55px;
-  overflow: hidden;
+.event { /* Event design after saving */
+    font-size: 10px;
+    padding: 2px;
+    background-color: #58bae4;
+    color: white;
+    border-radius: 5px;
+    max-height: 55px;
+    overflow: hidden;
 }
 
-.padding {                      /* Gives color to the blocks with the numbers of the last month */
-  cursor: default !important;
-  background-color: white !important;
-  box-shadow: none !important;
+.padding { /* Gives color to the blocks with the numbers of the last month */
+    cursor: default !important;
+    background-color: white !important;
+    box-shadow: none !important;
 }
 
 
-
-
-#newEventModal/*, #EventModal*/ {                         /* Sets the size and location of the event creation and viewing window */
-  display: none;
-  z-index: 20;
-  padding: 25px;
-  background-color: var(--white);
-  box-shadow: 0px 0px 3px black;
-  border-radius: 5px;
-  width: 400px;
-  top: 115px;
-  left: calc(50% - 225px);
-  position: absolute;
-  font-family: sans-serif;
+#newEventModal /*, #EventModal*/
+{ /* Sets the size and location of the event creation and viewing window */
+    display: none;
+    z-index: 20;
+    padding: 25px;
+    background-color: var(--white);
+    box-shadow: 0 0 3px black;
+    border-radius: 5px;
+    width: 400px;
+    top: 115px;
+    left: calc(50% - 225px);
+    position: absolute;
+    font-family: sans-serif;
 }
 
-#eventTitleInput {                      /* Design of input lines */
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 25px;
-  border-radius: 3px;
-  outline: none;
-  border: none;
-  box-shadow: 0px 0px 3px gray;
+#eventTitleInput { /* Design of input lines */
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+    border-radius: 3px;
+    outline: none;
+    border: none;
+    box-shadow: 0 0 3px gray;
 }
 
-#eventPlace {                 /* Design of input lines */
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 25px;
-  border-radius: 3px;
-  outline: none;
-  border: none;
-  box-shadow: 0px 0px 3px gray;
+#eventPlace { /* Design of input lines */
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+    border-radius: 3px;
+    outline: none;
+    border: none;
+    box-shadow: 0 0 3px gray;
 }
 
 .time {
-  padding: 10px;
-  width: 30%;
-  box-sizing: border-box;
-  margin-bottom: 25px;
-  border-radius: 3px;
-  outline: none;
-  border: none;
-  box-shadow: 0px 0px 3px gray;
-  height: 30px;
+    padding: 10px;
+    width: 30%;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+    border-radius: 3px;
+    outline: none;
+    border: none;
+    box-shadow: 0 0 3px gray;
+    height: 30px;
 }
 
 #select {
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 25px;
-  border-radius: 3px;
-  outline: none;
-  border: none;
-  box-shadow: 0px 0px 3px gray;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+    border-radius: 3px;
+    outline: none;
+    border: none;
+    box-shadow: 0 0 3px gray;
 }
 
-#eventTitleInput.error {                /* Appears if the text has not been typed */
-  border: 2px solid red;
+#eventTitleInput.error { /* Appears if the text has not been typed */
+    border: 2px solid red;
 }
 
-#cancelButton, #saveButton {         /* Button color */
-  background-color: gray;
-  width: 20%;
-  height: 30px;
+#cancelButton, #saveButton { /* Button color */
+    background-color: gray;
+    width: 20%;
+    height: 30px;
 }
 
 #eventText {
-  font-size: 14px;
+    font-size: 14px;
 }
 
-#modalBackDrop {                          /* Background behind the event creation and viewing windows */
-  display: none;
-  top: 0px;
-  left: 0px;
-  z-index: 10;
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  background-color: rgba(0,0,0,0.8);
+#modalBackDrop { /* Background behind the event creation and viewing windows */
+    display: none;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
-:root {                                     /* Basic colors */
-  --color_primary: #88b77b;
-  --black: #000;
-  --white: #fff;
-  --color_storm_dust_approx: #656565;
+:root { /* Basic colors */
+    --color_primary: #88b77b;
+    --black: #000;
+    --white: #fff;
+    --color_storm_dust_approx: #656565;
 }

@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Innotabe+</title>
+    <title>InnoTable</title>
 
     <link rel="stylesheet" href="calendar_editor.css">
 </head>
 
 <body>
-<div id="header" class="fixed-top navbar" style="position: absolute; inset: 0px 0px auto; height: 50px; width: auto">
+<div id="header" class="fixed-top navbar" style="position: absolute; inset: 0 0 auto; height: 50px; width: auto">
     <div class="block-1">
         <span class="inline-1">Information</span>
         <span class="inline-2">DoEMember17</span>
@@ -75,17 +75,17 @@
             <div id="newEventModal">
                 <h2 id="title">New Event</h2>
 
-                <input id="eventTitleInput" placeholder="Add event name"/>
-                <input id="eventPlace" placeholder="Add event place"/>
+                <label for="eventTitleInput"></label><input id="eventTitleInput" placeholder="Add event name"/>
+                <label for="eventPlace"></label><input id="eventPlace" placeholder="Add event place"/>
                 <span>
-            <input class="time" id="timeStart" type="time"/>
-            <input class="time" id="timeEnd" type="time"/>
+            <label for="timeStart"></label><input class="time" id="timeStart" type="time"/>
+            <label for="timeEnd"></label><input class="time" id="timeEnd" type="time"/>
           </span>
-                <select id="select">
-                    <option>bachelor</option>
-                    <option>master</option>
-                    <option>phd</option>
-                </select>
+                <label for="select"></label><select id="select">
+                <option>bachelor</option>
+                <option>master</option>
+                <option>phd</option>
+            </select>
 
 
                 <button id="saveButton">Save</button>
