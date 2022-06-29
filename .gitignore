@@ -94,4 +94,5 @@ nb-configuration.xml
 ##############################
 log/
 *.log
-logs/
+.log
+/logs/
