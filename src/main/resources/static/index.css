@@ -1,41 +1,46 @@
 body {
-    background: url('pictures/background_login_screen.png') no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
+    height: 100%;
+    margin: 0 auto;
+}
+
+#background {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    min-width: 100%;
+    min-height: 100%;
 }
 
 #block {
     position: fixed;
 
     background-color: white;
-    border: 2px solid gray;
+    border: 2px solid white;
     border-radius: 15px;
-    border: none;
-    box-shadow: 2px 2px 3px rgba(0,0,0,0.1);
-
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
 
     width: 30%;
     left: 35%;
-    top: 25%;
+    top: 20%;
 
     text-align: center;
-    padding: 25px;
 }
 
-#img {
-    width: 90%;
-    margin-top: 5px;
+#logo {
+    width: 86%;
+    margin-top: 15px;
     margin-bottom: 15px;
 }
 
 #email {
-    width: 95%;
+    width: 80%;
     height: 30px;
 
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     border-radius: 12px;
     border: none;
-    box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
 
     background-color: rgba(128, 128, 128, .15);
     text-align: center;
@@ -43,13 +48,13 @@ body {
 }
 
 #password {
-    width: 95%;
+    width: 80%;
     height: 30px;
 
     margin-bottom: 25px;
     border-radius: 12px;
     border: none;
-    box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
 
     background-color: rgba(128, 128, 128, .2);
     text-align: center;
@@ -57,12 +62,14 @@ body {
 }
 
 #login {
-    width: 98%;
+    width: 81%;
     height: 50px;
+
+    margin-bottom: 35px;
 
     border-radius: 12px;
     border: none;
-    box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
 
     background-color: var(--color_primary);
     text-align: center;
