@@ -1,90 +1,78 @@
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    color: var(--color_storm_dust_approx);
-    padding-top: 0;
-    background: var(--white);
+    background: url('pictures/background_login_screen.png') no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
-body {
-    font-size: 20px;
-}
+#block {
+    position: fixed;
 
-body {
-    margin: 0;
-    font-weight: 400;
-    line-height: 1.5;
+    background-color: white;
+    border: 2px solid gray;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+
+
+    width: 30%;
+    left: 35%;
+    top: 25%;
+
     text-align: center;
+    padding: 25px;
 }
 
-.title {
-    color: var(--black);
-    background: var(--color_primary);
-    font-size: 40px;
-    font-weight: bold;
+#img {
+    width: 90%;
+    margin-top: 5px;
+    margin-bottom: 15px;
 }
 
-.block {
-    border: 2px solid #656565;
-    color: #000;
+#email {
+    width: 95%;
+    height: 30px;
+
+    margin-bottom: 15px;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+
+    background-color: rgba(128, 128, 128, .15);
+    text-align: center;
+    font-size: 16px;
+}
+
+#password {
+    width: 95%;
+    height: 30px;
+
+    margin-bottom: 25px;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+
+    background-color: rgba(128, 128, 128, .2);
+    text-align: center;
+    font-size: 16px;
+}
+
+#login {
+    width: 98%;
+    height: 50px;
+
+    border-radius: 12px;
+    border: none;
+    box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+
     background-color: var(--color_primary);
-    font-size: 18px;
-
-    width: 600px;
-    height: 90px;
-    padding: 0;
-
-    margin: 0 auto 20px auto;
-}
-
-#page .card {
-    margin-top: 50px;
-}
-
-.card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    background-color: #fff;
-    background-clip: border-box;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-*, *::before, *::after {
-    box-sizing: border-box;
-}
-
-form input[type="text"] {
-    max-width: 1200px;
-}
-
-input[type="text"] {
-    height: 40px;
-    width: 600px;
-    border-radius: 0;
-    font-size: 20px;
-}
-
-input[type="password"] {
-    height: 40px;
-    width: 600px;
-    border-radius: 0;
-    font-size: 20px;
-}
-
-.btn {
-    font-size: 20px;
+    text-align: center;
+    font-size: 25px;
+    color: var(--white);
     font-weight: bold;
-    height: 40px;
-    width: 600px;
-    background-color: var(--color_primary);
 }
 
 :root {
-    --color_primary: #88b77b;
+    --color_primary: #15b012;
     --black: #000;
     --white: #fff;
     --color_storm_dust_approx: #656565;
