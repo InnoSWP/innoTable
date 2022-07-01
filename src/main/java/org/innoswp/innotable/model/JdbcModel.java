@@ -48,6 +48,7 @@ public class JdbcModel implements Model {
         var query = """
                 SELECT label
                 FROM "group"
+                ORDER BY label;
                 """;
 
         var response = new LinkedList<String>();
@@ -112,6 +113,7 @@ public class JdbcModel implements Model {
         var query = """
                 SELECT label
                 FROM role
+                ORDER BY label;
                 """;
         var result = new LinkedList<String>();
         try (
@@ -212,7 +214,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsByUser(User user) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsByUser(User user) throws SQLException {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event

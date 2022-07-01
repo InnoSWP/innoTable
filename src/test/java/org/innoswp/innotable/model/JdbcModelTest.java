@@ -17,29 +17,29 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class JdbcModelTest {
     @Autowired
-    private JdbcModel MODEL;
-    private final Pair<String, CalendarEvent> EVENT1 = new Pair<>("bachelor", new CalendarEvent("DROP", "DROP of bachelors from IU", "IU", new Date(2022 - 1900, Calendar.JULY, 1, 9, 3, 50), new Date(2022 - 1900, Calendar.JULY, 2, 9, 3, 50)));
-    private final Pair<String, CalendarEvent> EVENT2 = new Pair<>("master", new CalendarEvent("RETAKE", "RETAKE for all master students", "108", new Date(2022 - 1900, Calendar.JULY, 3, 9, 0, 0), new Date(2022 - 1900, Calendar.JULY, 3, 15, 0, 0)));
-    private final Pair<String, CalendarEvent> EVENT3 = new Pair<>("319", new CalendarEvent("VACATION", "VACATION for all 319 staff", "319", new Date(2022 - 1900, Calendar.JULY, 4, 0, 0, 0), new Date(2022 - 1900, Calendar.JULY, 11, 0, 0, 0)));
-    private final Pair<String, CalendarEvent> EVENT4 = new Pair<>("phd", new CalendarEvent("EXTRA LECTURE", "phd students have extra lecture on ***", "107", new Date(2022 - 1900, Calendar.JULY, 6, 9, 0, 0), new Date(2022 - 1900, Calendar.JULY, 6, 10, 30, 0)));
-    private final Pair<String, CalendarEvent> EVENT5 = new Pair<>("bachelor", new CalendarEvent("RETAKE1", "RETAKE on AGLA", "IU", new Date(2022 - 1900, Calendar.JUNE, 30, 9, 0, 0), new Date(2022 - 1900, Calendar.JUNE, 30, 12, 0, 0)));
-    private final User USER1 = new User("USER1@innopolis.university", "pwd0", new ArrayList<>(List.of("319")), "staff");
-    private final User USER2 = new User("USER2@innopolis.university", "pwd1", new ArrayList<>(List.of("319", "phd")), "staff");
-    private final User USER3 = new User("USER3@innopolis.university", "pwd2", new ArrayList<>(List.of("319", "master")), "student");
-    private final User USER4 = new User("USER4@innopolis.university", "pwd3", new ArrayList<>(List.of("master")), "student");
-    private final User USER5 = new User("USER5@innopolis.university", "pwd4", new ArrayList<>(List.of("bachelor")), "student");
-    private final String GROUP1 = "bachelor";
-    private final String GROUP2 = "master";
-    private final String GROUP3 = "phd";
-    private final String GROUP4 = "319";
-    private final String ROLE1 = "staff";
-    private final String ROLE2 = "student";
-    private final Pair<String, CalendarEvent> NEW_EVENT = new Pair<>(GROUP2, new CalendarEvent("EXTRA LECTURE", "master students have extra lecture on ***", "106", new Date(2022 - 1900, Calendar.JULY, 7, 9, 0, 0), new Date(2022 - 1900, Calendar.JULY, 8, 10, 30, 0)));
-    private final User NEW_USER = new User("new@iu", "pwd_new", new ArrayList<>(List.of(GROUP4, GROUP1)), "staff");
+    private JdbcModel testModel;
+    private final Pair<String, CalendarEvent> event1 = new Pair<>("bachelor", new CalendarEvent("DROP", "DROP of bachelors from IU", "IU", new Date(2022 - 1900, Calendar.JULY, 1, 9, 3, 50), new Date(2022 - 1900, Calendar.JULY, 2, 9, 3, 50)));
+    private final Pair<String, CalendarEvent> event2 = new Pair<>("master", new CalendarEvent("RETAKE", "RETAKE for all master students", "108", new Date(2022 - 1900, Calendar.JULY, 3, 9, 0, 0), new Date(2022 - 1900, Calendar.JULY, 3, 15, 0, 0)));
+    private final Pair<String, CalendarEvent> event3 = new Pair<>("319", new CalendarEvent("VACATION", "VACATION for all 319 staff", "319", new Date(2022 - 1900, Calendar.JULY, 4, 0, 0, 0), new Date(2022 - 1900, Calendar.JULY, 11, 0, 0, 0)));
+    private final Pair<String, CalendarEvent> event4 = new Pair<>("phd", new CalendarEvent("EXTRA LECTURE", "phd students have extra lecture on ***", "107", new Date(2022 - 1900, Calendar.JULY, 6, 9, 0, 0), new Date(2022 - 1900, Calendar.JULY, 6, 10, 30, 0)));
+    private final Pair<String, CalendarEvent> event5 = new Pair<>("bachelor", new CalendarEvent("RETAKE1", "RETAKE on AGLA", "IU", new Date(2022 - 1900, Calendar.JUNE, 30, 9, 0, 0), new Date(2022 - 1900, Calendar.JUNE, 30, 12, 0, 0)));
+    private final User user1 = new User("user1@innopolis.university", "pwd0", new ArrayList<>(List.of("319")), "staff");
+    private final User user2 = new User("user2@innopolis.university", "pwd1", new ArrayList<>(List.of("319", "phd")), "staff");
+    private final User user3 = new User("user3@innopolis.university", "pwd2", new ArrayList<>(List.of("319", "master")), "student");
+    private final User user4 = new User("user4@innopolis.university", "pwd3", new ArrayList<>(List.of("master")), "student");
+    private final User user5 = new User("user5@innopolis.university", "pwd4", new ArrayList<>(List.of("bachelor")), "student");
+    private final String group1 = "bachelor";
+    private final String group2 = "master";
+    private final String group3 = "phd";
+    private final String group4 = "319";
+    private final String role1 = "staff";
+    private final String role2 = "student";
+    private final Pair<String, CalendarEvent> newEvent = new Pair<>(group2, new CalendarEvent("EXTRA LECTURE", "master students have extra lecture on ***", "106", new Date(2022 - 1900, Calendar.JULY, 7, 9, 0, 0), new Date(2022 - 1900, Calendar.JULY, 8, 10, 30, 0)));
+    private final User newUser = new User("new@iu", "pwd_new", new ArrayList<>(List.of(group4, group1)), "staff");
 
     void execute(String query) throws SQLException {
         try (
-                var connection = MODEL.open();
+                var connection = testModel.open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
             preparedStatement.execute();
@@ -61,11 +61,11 @@ class JdbcModelTest {
                 VALUES ('staff'),
                         ('student');
                 INSERT INTO "user"(email, password, role_id)
-                VALUES ('USER1@innopolis.university', 'pwd0', (SELECT id FROM role WHERE label = 'staff')),
-                ('USER2@innopolis.university', 'pwd1', (SELECT id FROM role WHERE label = 'staff')),
-                ('USER3@innopolis.university', 'pwd2', (SELECT id FROM role WHERE label = 'student')),
-                ('USER4@innopolis.university', 'pwd3', (SELECT id FROM role WHERE label = 'student')),
-                ('USER5@innopolis.university', 'pwd4', (SELECT id FROM role WHERE label = 'student'));
+                VALUES ('user1@innopolis.university', 'pwd0', (SELECT id FROM role WHERE label = 'staff')),
+                ('user2@innopolis.university', 'pwd1', (SELECT id FROM role WHERE label = 'staff')),
+                ('user3@innopolis.university', 'pwd2', (SELECT id FROM role WHERE label = 'student')),
+                ('user4@innopolis.university', 'pwd3', (SELECT id FROM role WHERE label = 'student')),
+                ('user5@innopolis.university', 'pwd4', (SELECT id FROM role WHERE label = 'student'));
                 INSERT INTO "group"(label)
                 VALUES ('bachelor'),
                         ('master'),
@@ -92,10 +92,10 @@ class JdbcModelTest {
     @Test
     void getGroups() throws SQLException {
         clear();
-        assertEquals(MODEL.getGroups().size(), 0);
+        assertEquals(0, testModel.getGroups().size());
         fill();
-        var expected = new String[]{GROUP1, GROUP2, GROUP3, GROUP4};
-        var got = MODEL.getGroups();
+        var expected = new String[]{group4, group1, group2, group3};
+        var got = testModel.getGroups();
         assertEquals(got.size(), 4);
         for (int i = 0; i < 4; i++) assertEquals(expected[i], got.get(i));
     }
@@ -105,9 +105,9 @@ class JdbcModelTest {
         clear();
         fill();
         String NEW_GROUP = "new group";
-        MODEL.saveGroup(NEW_GROUP);
-        var expected = new String[]{GROUP1, GROUP2, GROUP3, GROUP4, NEW_GROUP};
-        var got = MODEL.getGroups();
+        testModel.saveGroup(NEW_GROUP);
+        var expected = new String[]{group4, group1, group2, NEW_GROUP, group3};
+        var got = testModel.getGroups();
         assertEquals(5, got.size());
         for (int i = 0; i < 5; i++) assertEquals(expected[i], got.get(i));
     }
@@ -116,9 +116,9 @@ class JdbcModelTest {
     void dropGroup() throws SQLException {
         clear();
         fill();
-        MODEL.dropGroup(GROUP1);
-        var expected = new String[]{GROUP2, GROUP3, GROUP4};
-        var got = MODEL.getGroups();
+        testModel.dropGroup(group1);
+        var expected = new String[]{group4, group2, group3};
+        var got = testModel.getGroups();
         assertEquals(3, got.size());
         for (int i = 0; i < 3; i++) assertEquals(expected[i], got.get(i));
     }
@@ -126,10 +126,10 @@ class JdbcModelTest {
     @Test
     void getRoles() throws SQLException {
         clear();
-        assertEquals(MODEL.getGroups().size(), 0);
+        assertEquals(0, testModel.getGroups().size());
         fill();
-        var expected = new String[]{ROLE1, ROLE2};
-        var got = MODEL.getRoles();
+        var expected = new String[]{role1, role2};
+        var got = testModel.getRoles();
         assertEquals(2, got.size());
         for (int i = 0; i < 2; i++) assertEquals(expected[i], got.get(i));
     }
@@ -139,9 +139,9 @@ class JdbcModelTest {
         clear();
         fill();
         String NEW_ROLE = "new role";
-        MODEL.saveRole(NEW_ROLE);
-        var expected = new String[]{ROLE1, ROLE2, NEW_ROLE};
-        var got = MODEL.getRoles();
+        testModel.saveRole(NEW_ROLE);
+        var expected = new String[]{NEW_ROLE, role1, role2};
+        var got = testModel.getRoles();
         assertEquals(3, got.size());
         for (int i = 0; i < 3; i++) assertEquals(expected[i], got.get(i));
     }
@@ -150,9 +150,9 @@ class JdbcModelTest {
     void saveEvent() throws SQLException {
         clear();
         fill();
-        MODEL.saveEvent(NEW_EVENT.second(), NEW_EVENT.first());
-        var expected = new Pair[]{EVENT5, EVENT1, EVENT2, EVENT3, EVENT4, NEW_EVENT};
-        var got = MODEL.loadAllEvents();
+        testModel.saveEvent(newEvent.second(), newEvent.first());
+        var expected = new Pair[]{event5, event1, event2, event3, event4, newEvent};
+        var got = testModel.loadAllEvents();
         assertEquals(6, got.size());
         for (int i = 0; i < 6; i++) assertEquals(expected[i], got.get(i));
     }
@@ -161,23 +161,23 @@ class JdbcModelTest {
     void dropEvent() throws SQLException {
         clear();
         fill();
-        MODEL.dropEvent(EVENT2.second().title());
-        var expected = new Pair[]{EVENT5, EVENT1, EVENT3, EVENT4};
-        var got = MODEL.loadAllEvents();
+        testModel.dropEvent(event2.second().title());
+        var expected = new Pair[]{event5, event1, event3, event4};
+        var got = testModel.loadAllEvents();
         assertEquals(4, got.size());
         for (int i = 0; i < 4; i++) assertEquals(expected[i], got.get(i));
     }
 
     @Test
-    void loadEventsByUser() throws Exception {
+    void loadEventsByUser() throws SQLException {
         clear();
-        var users = new User[]{USER1, USER2, USER3, USER4, USER5, new User("wrong@innopolis.university", "pwd", new ArrayList<>(), "staff")};
+        var users = new User[]{user1, user2, user3, user4, user5, new User("wrong@innopolis.university", "pwd", new ArrayList<>(), "staff")};
         for (var user : users)
-            assertEquals(MODEL.loadEventsByUser(user).size(), 0);
+            assertEquals(0, testModel.loadEventsByUser(user).size());
         fill();
-        var expected = new Pair[][]{{EVENT3}, {EVENT3, EVENT4}, {EVENT3, EVENT2}, {EVENT2}, {EVENT5, EVENT1}, {}};
+        var expected = new Pair[][]{{event3}, {event3, event4}, {event3, event2}, {event2}, {event5, event1}, {}};
         for (int i = 0; i < users.length; i++) {
-            var got = MODEL.loadEventsByUser(users[i]);
+            var got = testModel.loadEventsByUser(users[i]);
             assertEquals(got.size(), expected[i].length);
             for (int j = 0; j < expected[i].length; j++) {
                 assertEquals(expected[i][j], got.get(j));
@@ -188,13 +188,13 @@ class JdbcModelTest {
     @Test
     void loadEventsByGroup() throws Exception {
         clear();
-        var groups = new String[]{GROUP1, GROUP2, GROUP3, GROUP4, "wrong group"};
+        var groups = new String[]{group1, group2, group3, group4, "wrong group"};
         for (String group : groups)
-            assertEquals(MODEL.loadEventsByGroup(group).size(), 0);
+            assertEquals(0, testModel.loadEventsByGroup(group).size());
         fill();
-        var expected = new Pair[][]{{EVENT5, EVENT1}, {EVENT2}, {EVENT4}, {EVENT3}, {}};
+        var expected = new Pair[][]{{event5, event1}, {event2}, {event4}, {event3}, {}};
         for (int i = 0; i < groups.length; i++) {
-            var got = MODEL.loadEventsByGroup(groups[i]);
+            var got = testModel.loadEventsByGroup(groups[i]);
             assertEquals(got.size(), expected[i].length);
             for (int j = 0; j < expected[i].length; j++) {
                 assertEquals(expected[i][j], got.get(j));
@@ -210,25 +210,25 @@ class JdbcModelTest {
                 new Date(2022 - 1900, Calendar.JULY, 6, 9, 1, 0),
                 new Date(2023 - 1900, Calendar.JULY, 6, 9, 0, 0)};
 
-        assertEquals(0, MODEL.loadEventsIn(time[0], time[3]).size());
+        assertEquals(0, testModel.loadEventsIn(time[0], time[3]).size());
         fill();
-        var expected = new Pair[][]{{EVENT5, EVENT1, EVENT2, EVENT3, EVENT4}, {EVENT5}, {EVENT3, EVENT4}};
-        var got = MODEL.loadEventsIn(time[0], time[3]);
+        var expected = new Pair[][]{{event5, event1, event2, event3, event4}, {event5}, {event3, event4}};
+        var got = testModel.loadEventsIn(time[0], time[3]);
         assertEquals(expected[0].length, got.size());
         for (int j = 0; j < expected[0].length; j++) {
             assertEquals(expected[0][j], got.get(j));
         }
-        got = MODEL.loadEventsIn(time[0], time[1]);
+        got = testModel.loadEventsIn(time[0], time[1]);
         assertEquals(expected[1].length, got.size());
         for (int j = 0; j < expected[1].length; j++) {
             assertEquals(expected[1][j], got.get(j));
         }
-        got = MODEL.loadEventsIn(time[1], time[2]);
+        got = testModel.loadEventsIn(time[1], time[2]);
         assertEquals(expected[0].length, got.size());
         for (int j = 0; j < expected[0].length; j++) {
             assertEquals(expected[0][j], got.get(j));
         }
-        got = MODEL.loadEventsIn(time[2], time[3]);
+        got = testModel.loadEventsIn(time[2], time[3]);
         assertEquals(expected[2].length, got.size());
         for (int j = 0; j < expected[2].length; j++) {
             assertEquals(expected[2][j], got.get(j));
@@ -240,11 +240,11 @@ class JdbcModelTest {
         clear();
         var time = new Date[]{new Date(2022 - 1900, Calendar.JUNE, 30, 10, 0, 0), new Date(2022 - 1900, Calendar.JULY, 6, 9, 1, 0), new Date(2023 - 1900, Calendar.JULY, 6, 9, 0, 0)};
         for (var t : time)
-            assertEquals(0, MODEL.loadEventsDuring(t).size());
+            assertEquals(0, testModel.loadEventsDuring(t).size());
         fill();
-        var expected = new Pair[][]{{EVENT5}, {EVENT3, EVENT4}, {}};
+        var expected = new Pair[][]{{event5}, {event3, event4}, {}};
         for (int i = 0; i < time.length; i++) {
-            var got = MODEL.loadEventsDuring(time[i]);
+            var got = testModel.loadEventsDuring(time[i]);
             assertEquals(expected[i].length, got.size());
             for (int j = 0; j < expected[i].length; j++) {
                 assertEquals(expected[i][j], got.get(j));
@@ -257,11 +257,11 @@ class JdbcModelTest {
         clear();
         var titles = new String[]{"retake", "drop", "vacation", "lecture", "retake1", "wrong title", "r"};
         for (String title : titles)
-            assertEquals(MODEL.loadEventsByTitle(title).size(), 0);
+            assertEquals(0, testModel.loadEventsByTitle(title).size());
         fill();
-        var expected = new Pair[][]{{EVENT5, EVENT2}, {EVENT1}, {EVENT3}, {EVENT4}, {EVENT5}, {}, {EVENT5, EVENT1, EVENT2, EVENT4}};
+        var expected = new Pair[][]{{event5, event2}, {event1}, {event3}, {event4}, {event5}, {}, {event5, event1, event2, event4}};
         for (int i = 0; i < titles.length; i++) {
-            var got = MODEL.loadEventsByTitle(titles[i]);
+            var got = testModel.loadEventsByTitle(titles[i]);
             assertEquals(expected[i].length, got.size());
             for (int j = 0; j < expected[i].length; j++) {
                 assertEquals(expected[i][j], got.get(j));
@@ -272,10 +272,10 @@ class JdbcModelTest {
     @Test
     void loadAllEvents() throws SQLException {
         clear();
-        assertEquals(MODEL.loadAllEvents().size(), 0);
+        assertEquals(0, testModel.loadAllEvents().size());
         fill();
-        var expectedResults = new Pair[]{EVENT5, EVENT1, EVENT2, EVENT3, EVENT4};
-        var loaded = MODEL.loadAllEvents();
+        var expectedResults = new Pair[]{event5, event1, event2, event3, event4};
+        var loaded = testModel.loadAllEvents();
         assertEquals(loaded.size(), 5);
         for (int i = 0; i < 5; i++) {
             assertEquals(expectedResults[i], loaded.get(i));
@@ -285,10 +285,10 @@ class JdbcModelTest {
     @Test
     void getUsers() throws SQLException {
         clear();
-        assertEquals(MODEL.loadAllEvents().size(), 0);
+        assertEquals(0, testModel.loadAllEvents().size());
         fill();
-        var expectedResults = new User[]{USER1, USER2, USER3, USER4, USER5};
-        var loaded = MODEL.getUsers();
+        var expectedResults = new User[]{user1, user2, user3, user4, user5};
+        var loaded = testModel.getUsers();
         assertEquals(loaded.size(), 5);
         for (int i = 0; i < 5; i++) {
             assertEquals(expectedResults[i], loaded.get(i));
@@ -300,9 +300,9 @@ class JdbcModelTest {
     void addUser() throws SQLException {
         clear();
         fill();
-        MODEL.addUser(NEW_USER);
-        var expected = new User[]{USER1, USER2, USER3, USER4, USER5, NEW_USER};
-        var got = MODEL.getUsers();
+        testModel.addUser(newUser);
+        var expected = new User[]{user1, user2, user3, user4, user5, newUser};
+        var got = testModel.getUsers();
         assertEquals(6, got.size());
         for (int i = 0; i < 6; i++) assertEquals(expected[i], got.get(i));
     }
@@ -319,7 +319,7 @@ class JdbcModelTest {
                 """;
         ResultSet resultSet;
         try (
-                var connection = MODEL.open();
+                var connection = testModel.open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
             preparedStatement.setString(1, "%1%");
@@ -327,7 +327,7 @@ class JdbcModelTest {
             preparedStatement.setString(3, "bach%");
             resultSet = preparedStatement.executeQuery();
             assertFalse(resultSet.next());
-            MODEL.assignUsersToGroup(new ArrayList<>(List.of(USER1, USER2)), GROUP1);
+            testModel.assignUsersToGroup(new ArrayList<>(List.of(user1, user2)), group1);
             resultSet = preparedStatement.executeQuery();
             assertTrue(resultSet.next());
             assertTrue(resultSet.next());
@@ -339,9 +339,9 @@ class JdbcModelTest {
     void dropUser() throws SQLException {
         clear();
         fill();
-        MODEL.dropUser(USER4.email());
-        var expected = new User[]{USER1, USER2, USER3, USER5};
-        var got = MODEL.getUsers();
+        testModel.dropUser(user4.email());
+        var expected = new User[]{user1, user2, user3, user5};
+        var got = testModel.getUsers();
         assertEquals(4, got.size());
         for (int i = 0; i < 4; i++) assertEquals(expected[i], got.get(i));
     }
@@ -349,14 +349,14 @@ class JdbcModelTest {
     @Test
     void getUsersByGroup() throws SQLException {
         clear();
-        var groups = new String[]{GROUP1, GROUP2, GROUP3, GROUP4, "wrong group"};
+        var groups = new String[]{group1, group2, group3, group4, "wrong group"};
         for (String group : groups) {
-            assertEquals(MODEL.getUsersByGroup(group).size(), 0);
+            assertEquals(0, testModel.getUsersByGroup(group).size());
         }
         fill();
-        var expected = new User[][]{{USER5}, {USER3, USER4}, {USER2}, {USER1, USER2, USER3}, {}};
+        var expected = new User[][]{{user5}, {user3, user4}, {user2}, {user1, user2, user3}, {}};
         for (int i = 0; i < groups.length; i++) {
-            var got = MODEL.getUsersByGroup(groups[i]);
+            var got = testModel.getUsersByGroup(groups[i]);
             assertEquals(got.size(), expected[i].length);
             for (int j = 0; j < expected[i].length; j++) {
                 assertEquals(expected[i][j], got.get(j));
@@ -367,14 +367,14 @@ class JdbcModelTest {
     @Test
     void getUsersByRole() throws SQLException {
         clear();
-        var roles = new String[]{ROLE1, ROLE2, "wrong role"};
+        var roles = new String[]{role1, role2, "wrong role"};
         for (String role : roles) {
-            assertEquals(MODEL.getUsersByRole(role).size(), 0);
+            assertEquals(0, testModel.getUsersByRole(role).size());
         }
         fill();
-        var expected = new User[][]{{USER1, USER2}, {USER3, USER4, USER5}, {}};
+        var expected = new User[][]{{user1, user2}, {user3, user4, user5}, {}};
         for (int i = 0; i < roles.length; i++) {
-            var got = MODEL.getUsersByRole(roles[i]);
+            var got = testModel.getUsersByRole(roles[i]);
             assertEquals(got.size(), expected[i].length);
             for (int j = 0; j < expected[i].length; j++) {
                 assertEquals(expected[i][j], got.get(j));
