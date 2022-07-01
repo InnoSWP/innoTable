@@ -3,8 +3,7 @@ package org.innoswp.innotable.model;
 import org.innoswp.innotable.model.event.CalendarEvent;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public interface Model {
@@ -26,11 +25,9 @@ public interface Model {
 
     List<Pair<String, CalendarEvent>> loadEventsByGroup(String group) throws SQLException;
 
-    List<Pair<String, CalendarEvent>> loadEventsByDay(LocalDate date) throws SQLException;
+    List<Pair<String, CalendarEvent>> loadEventsIn(Date start, Date end) throws SQLException;
 
-    List<Pair<String, CalendarEvent>> loadEventsIn(LocalDateTime start, LocalDateTime end) throws SQLException;
-
-    List<Pair<String, CalendarEvent>> loadEventsDuring(LocalDateTime time) throws SQLException;
+    List<Pair<String, CalendarEvent>> loadEventsDuring(Date time) throws SQLException;
 
     List<Pair<String, CalendarEvent>> loadEventsByTitle(String title) throws SQLException;
 

@@ -7,8 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -27,11 +26,11 @@ public class JdbcModel implements Model {
         }
     }
 
-    private final String DB_URL = properties.getProperty("db.url");
+    private final String DB_URL = properties.getProperty("spring.datasource.url");
 
-    private final String DB_USERNAME = properties.getProperty("db.username");
+    private final String DB_USERNAME = properties.getProperty("spring.datasource.username");
 
-    private final String DB_PASSWORD = properties.getProperty("db.password");
+    private final String DB_PASSWORD = properties.getProperty("spring.datasource.password");
 
     private final String LABEL = "label";
 
@@ -213,8 +212,8 @@ public class JdbcModel implements Model {
             preparedStatement.setString(2, event.description());
             preparedStatement.setString(3, event.location());
 
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(event.startTime().toString()));
-            preparedStatement.setTimestamp(5, Timestamp.valueOf(event.endTime().toString()));
+            preparedStatement.setTimestamp(4, new Timestamp(event.startTime().getTime()));
+            preparedStatement.setTimestamp(5, new Timestamp(event.endTime().getTime()));
 
             preparedStatement.setString(6, group);
 
@@ -270,6 +269,7 @@ public class JdbcModel implements Model {
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
                 WHERE (SELECT label FROM "group" WHERE event.group_id = id) = ?
+                ORDER BY start_dt;
                 """;
         var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (var connection = open()) {
@@ -291,6 +291,7 @@ public class JdbcModel implements Model {
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
                 WHERE (SELECT label FROM "group" WHERE event.group_id = id) = ?
+                ORDER BY start_dt;
                 """;
         var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (
@@ -306,17 +307,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsByDay(LocalDate date) throws SQLException {
-
-        log.trace("Loaded events list by the given day: " + date);
-        return getEventsFromInterval(
-                date.atStartOfDay(),
-                date.atTime(23, 59, 59, 999999999)
-        );
-    }
-
-    @Override
-    public List<Pair<String, CalendarEvent>> loadEventsIn(LocalDateTime start, LocalDateTime end)
+    public List<Pair<String, CalendarEvent>> loadEventsIn(Date start, Date end)
             throws SQLException {
 
         log.trace("Loaded events list by the given duration: " + start + " - " + end);
@@ -324,25 +315,26 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsDuring(LocalDateTime time) throws SQLException {
+    public List<Pair<String, CalendarEvent>> loadEventsDuring(Date time) throws SQLException {
         log.trace("Loaded actual events list by the given time: " + time);
         return getEventsFromInterval(time, time);
     }
 
-    private List<Pair<String, CalendarEvent>> getEventsFromInterval(LocalDateTime start, LocalDateTime end)
+    private List<Pair<String, CalendarEvent>> getEventsFromInterval(Date start, Date end)
             throws SQLException {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
-                WHERE start_dt <= ? AND ? <= end_dt;
+                WHERE start_dt <= ? AND ? <= end_dt
+                ORDER BY start_dt;
                 """;
         var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setTimestamp(1, Timestamp.valueOf(end));
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(start));
+            preparedStatement.setTimestamp(1, new Timestamp(end.getTime()));
+            preparedStatement.setTimestamp(2, new Timestamp(start.getTime()));
 
             var resultSet = preparedStatement.executeQuery();
             formEventList(events, resultSet);
@@ -356,14 +348,15 @@ public class JdbcModel implements Model {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
-                WHERE title = ?;
+                WHERE title ILIKE ?
+                ORDER BY start_dt;
                 """;
         var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setString(1, title);
+            preparedStatement.setString(1, "%" + title + "%");
             var resultSet = preparedStatement.executeQuery();
             formEventList(events, resultSet);
         }
@@ -381,8 +374,8 @@ public class JdbcModel implements Model {
                                     resultSet.getObject("title", String.class),
                                     resultSet.getObject("description", String.class),
                                     resultSet.getObject("location", String.class),
-                                    resultSet.getObject("start_dt", Date.class),
-                                    resultSet.getObject("end_dt", Date.class)
+                                    new Date(resultSet.getTimestamp("start_dt").getTime()),
+                                    new Date(resultSet.getTimestamp("end_dt").getTime())
                             )
                     )
             );
