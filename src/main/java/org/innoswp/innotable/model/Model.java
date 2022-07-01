@@ -2,8 +2,7 @@ package org.innoswp.innotable.model;
 
 import org.innoswp.innotable.model.event.CalendarEvent;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public interface Model {
@@ -25,11 +24,9 @@ public interface Model {
 
     List<Pair<String, CalendarEvent>> loadEventsByGroup(String group) throws Exception;
 
-    List<Pair<String, CalendarEvent>> loadEventsByDay(LocalDate date) throws Exception;
+    List<Pair<String, CalendarEvent>> loadEventsIn(Date start, Date end) throws Exception;
 
-    List<Pair<String, CalendarEvent>> loadEventsIn(LocalDateTime start, LocalDateTime end) throws Exception;
-
-    List<Pair<String, CalendarEvent>> loadEventsDuring(LocalDateTime time) throws Exception;
+    List<Pair<String, CalendarEvent>> loadEventsDuring(Date time) throws Exception;
 
     List<Pair<String, CalendarEvent>> loadEventsByTitle(String title) throws Exception;
 
