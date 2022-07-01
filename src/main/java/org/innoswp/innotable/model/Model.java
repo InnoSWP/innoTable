@@ -41,7 +41,7 @@ public interface Model {
 
     List<User> getUsers() throws SQLException;
 
-    List<User> getUsersByGroup(String String) throws SQLException;
+    List<User> getUsersByGroup(String group) throws SQLException;
 
-    List<User> getUsersByRole(String String) throws SQLException;
+    List<User> getUsersByRole(String role) throws SQLException;
 }
