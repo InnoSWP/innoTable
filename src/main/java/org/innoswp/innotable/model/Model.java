@@ -2,48 +2,46 @@ package org.innoswp.innotable.model;
 
 import org.innoswp.innotable.model.event.CalendarEvent;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 public interface Model {
-    List<String> getGroups() throws Exception;
+    List<String> getGroups() throws SQLException;
 
-    void saveGroup(String group) throws Exception;
+    void saveGroup(String group) throws SQLException;
 
-    String dropGroup(String group) throws Exception;
+    String dropGroup(String group) throws SQLException;
 
-    List<String> getRoles() throws Exception;
+    List<String> getRoles() throws SQLException;
 
-    void saveRole(String String) throws Exception;
+    void saveRole(String role) throws SQLException;
 
-    void saveEvent(CalendarEvent calendarEvent, String String) throws Exception;
+    void saveEvent(CalendarEvent calendarEvent, String group) throws SQLException;
 
-    Pair<String, CalendarEvent> dropEvent(String title) throws Exception;
+    Pair<String, CalendarEvent> dropEvent(String title) throws SQLException;
 
-    List<Pair<String, CalendarEvent>> loadEventsByUser(User user) throws Exception;
+    List<Pair<String, CalendarEvent>> loadEventsByUser(User user) throws SQLException;
 
-    List<Pair<String, CalendarEvent>> loadEventsByGroup(String group) throws Exception;
+    List<Pair<String, CalendarEvent>> loadEventsByGroup(String group) throws SQLException;
 
-    List<Pair<String, CalendarEvent>> loadEventsByDay(LocalDate date) throws Exception;
+    List<Pair<String, CalendarEvent>> loadEventsIn(Date start, Date end) throws SQLException;
 
-    List<Pair<String, CalendarEvent>> loadEventsIn(LocalDateTime start, LocalDateTime end) throws Exception;
+    List<Pair<String, CalendarEvent>> loadEventsDuring(Date time) throws SQLException;
 
-    List<Pair<String, CalendarEvent>> loadEventsDuring(LocalDateTime time) throws Exception;
+    List<Pair<String, CalendarEvent>> loadEventsByTitle(String title) throws SQLException;
 
-    List<Pair<String, CalendarEvent>> loadEventsByTitle(String title) throws Exception;
+    List<Pair<String, CalendarEvent>> loadAllEvents() throws SQLException;
 
-    List<Pair<String, CalendarEvent>> loadAllEvents() throws Exception;
+    void addUser(User user) throws SQLException;
 
-    void addUser(User user) throws Exception;
+    void assignUsersToGroup(List<User> users, String group) throws SQLException;
 
-    void assignUsersToGroup(List<User> users, String group) throws Exception;
+    User dropUser(String email) throws SQLException;
 
-    User dropUser(String email) throws Exception;
+    List<User> getUsers() throws SQLException;
 
-    List<User> getUsers() throws Exception;
+    List<User> getUsersByGroup(String group) throws SQLException;
 
-    List<User> getUsersByGroup(String String) throws Exception;
-
-    List<User> getUsersByRole(String String) throws Exception;
+    List<User> getUsersByRole(String role) throws SQLException;
 }

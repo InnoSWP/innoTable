@@ -2,39 +2,91 @@ package org.innoswp.innotable.model;
 
 import lombok.extern.slf4j.Slf4j;
 import org.innoswp.innotable.model.event.CalendarEvent;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 @Slf4j
-@Repository
 public class JdbcModel implements Model {
 
-    private final String datasourceUrl;
+    private static final Properties properties = new Properties();
 
-    private final String datasourceUsername;
+    static {
+        try {
+            properties.load(new BufferedReader(new FileReader("src/main/resources/application.properties")));
+        } catch (IOException e) {
+            log.error("Cannot read from application.properties file");
+            throw new RuntimeException(e);
+        }
+    }
 
-    private final String datasourcePassword;
+    private final String DB_URL = properties.getProperty("spring.datasource.url");
 
-    public JdbcModel(@Value("${spring.datasource.url}") String datasourceUrl,
-                     @Value("${spring.datasource.username}") String datasourceUsername,
-                     @Value("${spring.datasource.password}") String datasourcePassword) {
-        this.datasourceUrl = datasourceUrl;
-        this.datasourceUsername = datasourceUsername;
-        this.datasourcePassword = datasourcePassword;
+    private final String DB_USERNAME = properties.getProperty("spring.datasource.username");
+
+    private final String DB_PASSWORD = properties.getProperty("spring.datasource.password");
+
+    private final String LABEL = "label";
+
+    public JdbcModel() {
+        try (
+                var connection = open();
+                var statement = connection.createStatement()
+        ) {
+            var setupQuery = """                               
+                    CREATE TABLE IF NOT EXISTS "group"(
+                        id SERIAL PRIMARY KEY,
+                        label VARCHAR(63) UNIQUE NOT NULL
+                    );
+
+                    CREATE TABLE IF NOT EXISTS role(
+                        id SERIAL PRIMARY KEY,
+                        label VARCHAR(63) UNIQUE NOT NULL
+                    );
+
+                    CREATE TABLE IF NOT EXISTS "user"(
+                        id SERIAL PRIMARY KEY,
+                        email VARCHAR(63) UNIQUE NOT NULL,
+                        password VARCHAR(63) NOT NULL,
+                        role_id INT REFERENCES role (id)
+                    );
+
+                    CREATE TABLE IF NOT EXISTS event(
+                        id SERIAL PRIMARY KEY,
+                        title VARCHAR(255) NOT NULL,
+                        description TEXT,
+                        location VARCHAR(255),
+                        start_dt TIMESTAMP NOT NULL,
+                        end_dt TIMESTAMP NOT NULL,
+                        group_id INT REFERENCES "group"(id) ON DELETE CASCADE
+                    );
+
+                    CREATE TABLE IF NOT EXISTS user_group(
+                        user_id INT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+                        group_id INT NOT NULL REFERENCES "group"(id) ON DELETE CASCADE
+                    );
+                    """;
+
+            statement.execute(setupQuery);
+            log.trace("Created JdbcModel instance");
+
+        } catch (Exception e) {
+            log.error("Cannot create JdbcModel instance");
+        }
     }
 
     private Connection open() {
         try {
             return DriverManager.getConnection(
-                    datasourceUrl,
-                    datasourceUsername,
-                    datasourcePassword
+                    DB_URL,
+                    DB_USERNAME,
+                    DB_PASSWORD
             );
 
         } catch (SQLException e) {
@@ -59,7 +111,7 @@ public class JdbcModel implements Model {
             var resultSet = statement.executeQuery(query);
 
             while (resultSet.next())
-                response.add(resultSet.getObject("label", String.class));
+                response.add(resultSet.getObject(LABEL, String.class));
         }
 
         log.trace("Loaded groups list");
@@ -99,7 +151,7 @@ public class JdbcModel implements Model {
 
             if (resultSet.next()) {
                 log.trace("Dropped group " + group);
-                return resultSet.getObject("label", String.class);
+                return resultSet.getObject(LABEL, String.class);
             }
         }
 
@@ -121,7 +173,7 @@ public class JdbcModel implements Model {
             var resultSet = statement.executeQuery(query);
 
             while (resultSet.next())
-                result.add(resultSet.getObject("label", String.class));
+                result.add(resultSet.getObject(LABEL, String.class));
         }
 
         log.trace("Loaded roles list");
@@ -160,8 +212,8 @@ public class JdbcModel implements Model {
             preparedStatement.setString(2, event.description());
             preparedStatement.setString(3, event.location());
 
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(event.startTime().toString()));
-            preparedStatement.setTimestamp(5, Timestamp.valueOf(event.endTime().toString()));
+            preparedStatement.setTimestamp(4, new Timestamp(event.startTime().getTime()));
+            preparedStatement.setTimestamp(5, new Timestamp(event.endTime().getTime()));
 
             preparedStatement.setString(6, group);
 
@@ -212,11 +264,12 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsByUser(User user) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsByUser(User user) throws SQLException {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
                 WHERE (SELECT label FROM "group" WHERE event.group_id = id) = ?
+                ORDER BY start_dt;
                 """;
         var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (var connection = open()) {
@@ -233,11 +286,12 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsByGroup(String group) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsByGroup(String group) throws SQLException {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
                 WHERE (SELECT label FROM "group" WHERE event.group_id = id) = ?
+                ORDER BY start_dt;
                 """;
         var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (
@@ -253,43 +307,34 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsByDay(LocalDate date) throws Exception {
-
-        log.trace("Loaded events list by the given day: " + date);
-        return getEventsFromInterval(
-                date.atStartOfDay(),
-                date.atTime(23, 59, 59, 999999999)
-        );
-    }
-
-    @Override
-    public List<Pair<String, CalendarEvent>> loadEventsIn(LocalDateTime start, LocalDateTime end)
-            throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsIn(Date start, Date end)
+            throws SQLException {
 
         log.trace("Loaded events list by the given duration: " + start + " - " + end);
         return getEventsFromInterval(start, end);
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsDuring(LocalDateTime time) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsDuring(Date time) throws SQLException {
         log.trace("Loaded actual events list by the given time: " + time);
         return getEventsFromInterval(time, time);
     }
 
-    private List<Pair<String, CalendarEvent>> getEventsFromInterval(LocalDateTime start, LocalDateTime end)
+    private List<Pair<String, CalendarEvent>> getEventsFromInterval(Date start, Date end)
             throws SQLException {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
-                WHERE start_dt <= ? AND ? <= end_dt;
+                WHERE start_dt <= ? AND ? <= end_dt
+                ORDER BY start_dt;
                 """;
         var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setTimestamp(1, Timestamp.valueOf(end));
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(start));
+            preparedStatement.setTimestamp(1, new Timestamp(end.getTime()));
+            preparedStatement.setTimestamp(2, new Timestamp(start.getTime()));
 
             var resultSet = preparedStatement.executeQuery();
             formEventList(events, resultSet);
@@ -303,14 +348,15 @@ public class JdbcModel implements Model {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
-                WHERE title = ?;
+                WHERE title ILIKE ?
+                ORDER BY start_dt;
                 """;
         var events = new LinkedList<Pair<String, CalendarEvent>>();
         try (
                 var connection = open();
                 var preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setString(1, title);
+            preparedStatement.setString(1, "%" + title + "%");
             var resultSet = preparedStatement.executeQuery();
             formEventList(events, resultSet);
         }
@@ -328,8 +374,8 @@ public class JdbcModel implements Model {
                                     resultSet.getObject("title", String.class),
                                     resultSet.getObject("description", String.class),
                                     resultSet.getObject("location", String.class),
-                                    resultSet.getObject("start_dt", Date.class),
-                                    resultSet.getObject("end_dt", Date.class)
+                                    new Date(resultSet.getTimestamp("start_dt").getTime()),
+                                    new Date(resultSet.getTimestamp("end_dt").getTime())
                             )
                     )
             );
@@ -510,7 +556,7 @@ public class JdbcModel implements Model {
                 pStatement.setString(1, user.email());
                 var resultSet1 = pStatement.executeQuery();
                 while (resultSet1.next())
-                    user.groups().add(resultSet1.getObject("label", String.class));
+                    user.groups().add(resultSet1.getObject(LABEL, String.class));
             }
 
             users.add(user);
