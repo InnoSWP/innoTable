@@ -96,7 +96,7 @@ class JdbcModelTest {
         fill();
         var expected = new String[]{group4, group1, group2, group3};
         var got = testModel.getGroups();
-        assertEquals(got.size(), 4);
+        assertEquals(4, got.size());
         for (int i = 0; i < 4; i++) assertEquals(expected[i], got.get(i));
     }
 
@@ -186,7 +186,7 @@ class JdbcModelTest {
     }
 
     @Test
-    void loadEventsByGroup() throws Exception {
+    void loadEventsByGroup() throws SQLException {
         clear();
         var groups = new String[]{group1, group2, group3, group4, "wrong group"};
         for (String group : groups)
@@ -203,7 +203,7 @@ class JdbcModelTest {
     }
 
     @Test
-    void loadEventsIn() throws Exception {
+    void loadEventsIn() throws SQLException {
         clear();
         var time = new Date[]{new Date(2022 - 1900, Calendar.JUNE, 30, 0, 0, 0),
                 new Date(2022 - 1900, Calendar.JUNE, 30, 10, 0, 0),
@@ -236,7 +236,7 @@ class JdbcModelTest {
     }
 
     @Test
-    void loadEventsDuring() throws Exception {
+    void loadEventsDuring() throws SQLException {
         clear();
         var time = new Date[]{new Date(2022 - 1900, Calendar.JUNE, 30, 10, 0, 0), new Date(2022 - 1900, Calendar.JULY, 6, 9, 1, 0), new Date(2023 - 1900, Calendar.JULY, 6, 9, 0, 0)};
         for (var t : time)
@@ -276,7 +276,7 @@ class JdbcModelTest {
         fill();
         var expectedResults = new Pair[]{event5, event1, event2, event3, event4};
         var loaded = testModel.loadAllEvents();
-        assertEquals(loaded.size(), 5);
+        assertEquals(5, loaded.size());
         for (int i = 0; i < 5; i++) {
             assertEquals(expectedResults[i], loaded.get(i));
         }
@@ -289,7 +289,7 @@ class JdbcModelTest {
         fill();
         var expectedResults = new User[]{user1, user2, user3, user4, user5};
         var loaded = testModel.getUsers();
-        assertEquals(loaded.size(), 5);
+        assertEquals(5, loaded.size());
         for (int i = 0; i < 5; i++) {
             assertEquals(expectedResults[i], loaded.get(i));
         }

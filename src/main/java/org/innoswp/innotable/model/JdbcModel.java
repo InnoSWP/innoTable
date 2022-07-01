@@ -236,7 +236,7 @@ public class JdbcModel implements Model {
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsByGroup(String group) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsByGroup(String group) throws SQLException {
         var query = """
                 SELECT title, description, location, start_dt, end_dt,
                     (SELECT label FROM "group" WHERE event.group_id = id) "group" FROM event
@@ -259,14 +259,14 @@ public class JdbcModel implements Model {
 
     @Override
     public List<Pair<String, CalendarEvent>> loadEventsIn(java.util.Date start, java.util.Date end)
-            throws Exception {
+            throws SQLException {
 
         log.trace("Loaded events list by the given duration: " + start + " - " + end);
         return getEventsFromInterval(start, end);
     }
 
     @Override
-    public List<Pair<String, CalendarEvent>> loadEventsDuring(Date time) throws Exception {
+    public List<Pair<String, CalendarEvent>> loadEventsDuring(Date time) throws SQLException {
         log.trace("Loaded actual events list by the given time: " + time);
         return getEventsFromInterval(time, time);
     }
