@@ -11,9 +11,11 @@
 
 <body>
 
+<img src="pictures/background_login_screen.png" id="background" alt="">
+
 <div>
     <div class="bigBlock">
-        <div class="bigBlockWithoutBoundings">
+        <div class="bigBlockWithoutBounding">
             <div class="bigCalendar">
                 <div id="bigCalendarHeader">
                     <div>
@@ -46,12 +48,12 @@
                 <h2 id="title">New Event</h2>
                 <div class="placeholder-form">
                     <div class="placeholder-container">
-                        <input id="eventTitleInput" type="text" placeholder=" "/>
+                        <label for="eventTitleInput"></label><input id="eventTitleInput" type="text" placeholder=" "/>
                         <label>Add event name</label>
                     </div>
 
                     <div class="placeholder-container">
-                        <input id="eventPlace" type="text" placeholder=" "/>
+                        <label for="eventPlace"></label><input id="eventPlace" type="text" placeholder=" "/>
                         <label>Add event place</label>
                     </div>
 
@@ -69,12 +71,12 @@
                             <label><input type="checkbox" name="brands[]" value="2" checked>Master</label>
                             <label><input type="checkbox" name="brands[]" value="3">PhD</label>
                         </div>
-                        <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
+                        <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
                     </div>
 
 
                     <div class="placeholder-container">
-                        <input id="description" type="text" placeholder=" "/>
+                        <label for="description"></label><input id="description" type="text" placeholder=" "/>
                         <label>Add description</label>
                     </div>
 
@@ -98,7 +100,7 @@
         </div>
     </div>
 </div>
-<!-- Black overlay on top of the main screen to draw attention to the event creation and viewing blocks -->
+
 <div id="modalBackDrop"></div>
 <script src="js/update_calendar.js"></script>
 
