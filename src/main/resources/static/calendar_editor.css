@@ -1,34 +1,27 @@
-#header {                            /* Make a header at the top of the page and color it green */
-  background-color: var(--color_primary);
-  height: 50px;
-  font-size: 30px;
-  font-weight: bold;
+body {
+    height: 100%;
+    margin: 0 auto;
 }
 
-.block-1 .inline-1{                 /* Pin Information from the left edge */
-  position: absolute;
-  top: 5px;
-  left: 10px;
+#background {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    min-width: 100%;
+    min-height: 100%;
 }
 
-.block-1 .inline-2 {             /* Pin DoEMember17 from the right edge */
-  position: absolute;
-  top: 5px;
-  right: 10px;
+.bigBlock { /* Place the large block on the right side */
+    position: absolute;
+    inset: 5% 0 0 10%;
+    height: auto;
+    width: auto;
 }
 
-.bigBlock {                  /* Place the large block on the right side */
-  position: absolute;
-  inset: 50px 0px 0px 210px;
-  background-color: white;
-  height: auto;
-  width: auto;
-}
-
-.bigBlockWithoutBoundings { /* A small block without a top */
+.bigBlockWithoutBounding { /* A small block without a top */
     position: absolute;
     inset: 20px 15% 0 2%;
-    background-color: white;
     height: auto;
     width: auto;
 }
@@ -39,11 +32,14 @@
     font-family: sans-serif;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .arrow { /* Dies button borders and assigns size */
     cursor: pointer;
-    border: none;
+    border: 2px solid rgba(128, 128, 128, .7);
+    box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+    border-radius: 10px;
     background: none;
     outline: none;
     font-size: 26px;
@@ -59,9 +55,19 @@
   display: flex;
   color: var(--black);
   font-size: 20px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
 }
 
-#bigCalendarWeekdays div {               /* Sets the margins for the days of the week in a large calendar */    
+#monday {
+  border-top-left-radius: 15px;
+}
+
+#sunday {
+  border-top-right-radius: 15px;
+}
+
+#bigCalendarWeekdays div {               /* Sets the margins for the days of the week in a large calendar */
   width: 14.28%;
   height: 50px;
   text-align: center;
@@ -84,7 +90,7 @@
     cursor: pointer;
     box-sizing: border-box;
     background-color: white;
-    box-shadow: 0 0 3px #CBD4C2;
+    border: 1px solid gray;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -93,59 +99,108 @@
 .event { /* Event design after saving */
     font-size: 10px;
     padding: 2px;
-    background-color: #58bae4;
+    background-color: #00406b;
     color: white;
     border-radius: 5px;
     max-height: 55px;
     overflow: hidden;
 }
 
+.eventIModal {
+  font-size: 20px;
+  padding: 2px;
+  color: black;
+  border-radius: 5px;
+  max-height: 55px;
+  overflow: hidden;
+}
+
+#eventText {
+  font-size: 20px;
+}
+
 .padding { /* Gives color to the blocks with the numbers of the last month */
     cursor: default !important;
-    background-color: white !important;
+    border: 1px solid gray;
     box-shadow: none !important;
+    background-color: rgb(204, 204, 204);
 }
 
+#currentDay {
+  background-color: rgba(21, 176, 18, .4);
+}
+
+#lastDay {
+  background-color: rgb(204, 204, 204);
+}
 
 #title {
-    padding-top: 0px;
+    padding-top: 0;
 }
 
-#newEventModal {                         /* Sets the size and location of the event creation and viewing window */
-  display: none;
-  z-index: 20;
-  padding: 0px 25px 25px 25px;
-  background-color: var(--white);
-  box-shadow: 0px 0px 3px black;
+#newEventModal { /* Sets the size and location of the event creation and viewing window */
+    display: none;
+    z-index: 20;
+    padding: 0 25px 25px 25px;
+    background-color: var(--white);
+    box-shadow: 0 0 3px black;
+    border-radius: 5px;
+    width: 400px;
+    top: 40px;
+    left: calc(50% - 225px);
+    position: absolute;
+    font-family: sans-serif;
+}
+
+.placeholder-form {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 20px auto;
+}
+
+.placeholder-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+.placeholder-container input {
+  background-color: #FFF;
+  border: 1px solid rgba(128, 128, 128, .4);
   border-radius: 5px;
-  width: 400px;
-  top: 100px;
-  left: calc(50% - 225px);
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+  box-sizing: border-box;
+  color: #000;
+  font-size: 16px;
+  line-height: 16px;
+  height: 35px;
+  outline: 0;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.placeholder-container label {
+  color: #000;
+  font-family: Verdana, sans-serif;
+  background-color: #FFF;
+  font-size: 14px;
+  line-height: 14px;
+  pointer-events: none;
   position: absolute;
-  font-family: sans-serif;
+  transition: all 200ms;
+  top: 12px;
+  left: 10px;
 }
 
-#eventTitleInput { /* Design of input lines */
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 25px;
-    border-radius: 3px;
-    outline: none;
-    border: none;
-    box-shadow: 0 0 3px gray;
+.placeholder-container input:focus + label,
+.placeholder-container input:not(:placeholder-shown) + label{
+  top: -10px;
+  left: 10px;
+  font-size: 11px;
+  background-color: #FFF;
+  padding: 2px 10px;
 }
 
-#eventPlace { /* Design of input lines */
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 25px;
-    border-radius: 3px;
-    outline: none;
-    border: none;
-    box-shadow: 0 0 3px gray;
-}
 
 .time {
     padding: 10px;
@@ -154,56 +209,178 @@
     margin-bottom: 25px;
     border-radius: 3px;
     outline: none;
-    border: none;
-    box-shadow: 0 0 3px gray;
+    border: 1px solid rgba(128, 128, 128, .4);
+    box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
     height: 30px;
-}
-
-#select {
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 25px;
-    border-radius: 3px;
-    outline: none;
-    border: none;
-    box-shadow: 0 0 3px gray;
 }
 
 #eventTitleInput.error { /* Appears if the text has not been typed */
     border: 2px solid red;
 }
 
-#description {
-    height: 60px;
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 25px;
-    border-radius: 3px;
-    outline: none;
-    border: none;
-    box-shadow: 0px 0px 3px gray;
+
+#select {
+  position: relative;
+  padding-bottom: 25px;
 }
 
-#cancelButton, #saveButton {         /* Button color */
-  background-color: gray;
-  width: 20%;
+.checkselect {
+  position: relative;
+  display: inline-block;
+  min-width: 200px;
+  text-align: left;
+}
+
+.checkselect-control {
+  position: relative;
+  padding: 0 !important;
+}
+
+.checkselect-control select {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  margin: 0;
+  padding-left: 5px;
   height: 30px;
 }
 
-#modalBackDrop {                          /* Background behind the event creation and viewing windows */
-  display: none;
-  top: 0px;
-  left: 0px;
-  z-index: 10;
-  width: 100vw;
-  height: 100vh;
+.checkselect-over {
   position: absolute;
-  background-color: rgba(0,0,0,0.7);
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  cursor: pointer;
+}
+
+.checkselect-popup {
+    display: none;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    border: 1px solid #dadada;
+    border-top: none;
+    background: #fff;
+    z-index: 9999;
+    overflow: auto;
+    user-select: none;
+}
+
+.checkselect label {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 4px 6px 4px 25px;
+  font-weight: normal;
+  font-size: 1em;
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.checkselect-popup input {
+  position: absolute;
+  top: 5px;
+  left: 8px;
+  margin: 0 !important;
+  padding: 0;
+}
+
+.checkselect-popup label:hover {
+  background: #03a2ff;
+  color: #fff;
+}
+
+.checkselect-popup fieldset {
+  display: block;
+  margin:  0;
+  padding: 0;
+  border: none;
+}
+
+.checkselect-popup fieldset input {
+  left: 15px;
+}
+
+.checkselect-popup fieldset label {
+  padding-left: 32px;
+}
+
+.checkselect-popup legend {
+  display: block;
+  margin: 0;
+  padding: 5px 8px;
+  font-weight: 700;
+  font-size: 1em;
+  line-height: 1.1;
+}
+
+#eventModal { /* Sets the size and location of the event creation and viewing window */
+    display: none;
+    z-index: 15;
+    padding: 0 25px 25px 25px;
+    background-color: var(--white);
+    box-shadow: 0 0 3px black;
+    border-radius: 5px;
+    width: 400px;
+    top: 90px;
+    left: calc(50% - 225px);
+    position: absolute;
+    font-family: sans-serif;
+}
+
+.eventModal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#cancelButton, #saveButton {         /* Button color */
+  background-color: rgba(128, 128, 128, .3);
+  width: 30%;
+  height: 30px;
+
+  border: none;
+  box-shadow: 2px 2px 1px rgba(0,0,0,0.4);
+  border-radius: 5px;
+}
+
+#createCloseButtons {
+  display: flex;
+  right: 10px;
+  width: 50%;
+}
+
+#createButton, #closeButton {
+  background-color: rgba(128, 128, 128, .3);
+  width: 50%;
+  height: 30px;
+  margin: 5px;
+
+  border: none;
+  box-shadow: 2px 2px 1px rgba(0,0,0,0.4);
+  border-radius: 5px;
+}
+
+#modalBackDrop { /* Background behind the event creation and viewing windows */
+    display: none;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    background-color: rgba(128, 128, 128, .15);
 }
 
 :root { /* Basic colors */
-    --color_primary: #88b77b;
+    --color_primary: #15b012;
     --black: #000;
     --white: #fff;
     --color_storm_dust_approx: #656565;
