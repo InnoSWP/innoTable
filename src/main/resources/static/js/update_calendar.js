@@ -100,10 +100,10 @@ function load() {                     /* Function for displaying the calendar */
           }
         }
         if (k > 1) {
-          const eventDiv = document.createElement('div');
-          eventDiv.classList.add('event');
-          eventDiv.innerText = 'Show more';
-          daySquare.appendChild(eventDiv);
+          const eventDiv1 = document.createElement('div');
+          eventDiv1.classList.add('event');
+          eventDiv1.innerText = 'Show more';
+          daySquare.appendChild(eventDiv1);
         }
     }
 
