@@ -6,25 +6,18 @@ import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion
 import microsoft.exchange.webservices.data.core.service.item.Appointment;
 import microsoft.exchange.webservices.data.credential.WebCredentials;
 import microsoft.exchange.webservices.data.property.complex.MessageBody;
-import org.innoswp.innotable.model.JdbcModel;
-import org.innoswp.innotable.model.Pair;
 import org.innoswp.innotable.model.User;
 import org.innoswp.innotable.model.event.CalendarEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.util.List;
 
 @Slf4j
 @Component
 public class EwsForwarder implements EventForwarder {
 
     private final ExchangeService service = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
-
-    @Autowired
-    private JdbcModel model;
 
     public EwsForwarder(@Value("${ews.service.url}") String serviceUrl,
                         @Value("${ews.service.email}") String serviceEmail,
@@ -42,31 +35,13 @@ public class EwsForwarder implements EventForwarder {
     }
 
     @Override
-    public void pushEventForUser(User user, List<CalendarEvent> userEvents) throws Exception {
-        for (var event : userEvents) {
-            var appointment = createAppointment(event);
+    public void pushEventForUser(User user, CalendarEvent calendarEvent) throws Exception {
+        var appointment = createAppointment(calendarEvent);
 
-            appointment.getRequiredAttendees().add(user.email());
-            appointment.save();
+        appointment.getRequiredAttendees().add(user.email());
+        appointment.save();
 
-            log.info("Pushed event " + event.title() + " for user");
-        }
-    }
-
-    @Override
-    public void pushEventsForGroup(String group, List<CalendarEvent> groupEvents) throws Exception {
-        for (var user : model.getUsersByGroup(group))
-            pushEventForUser(user, groupEvents);
-
-        log.info("Pushed events for group " + group);
-    }
-
-    @Override
-    public void pushAllEvents(List<Pair<String, List<CalendarEvent>>> events) throws Exception {
-        for (var pair : events)
-            pushEventsForGroup(pair.first(), pair.second());
-
-        log.info("Pushed all events");
+        log.info("Pushed event " + calendarEvent.title() + " for user");
     }
 
     private Appointment createAppointment(CalendarEvent event) throws Exception {

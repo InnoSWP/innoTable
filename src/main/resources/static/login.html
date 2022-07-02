@@ -4,7 +4,7 @@
 
 <head>
     <title>InnoTable</title>
-    <link rel="stylesheet" href="index.css"/>
+    <link rel="stylesheet" href="login.css"/>
     <meta charset="UTF-8">
 </head>
 
@@ -17,6 +17,8 @@
         <img id="logo" src="pictures/logo.png" alt="innoTable+">
     </div>
 
+    <script src="js/main.js"></script>
+
     <div>
         <label for="email"></label><input type="email" placeholder="email" id="email">
     </div>
@@ -26,7 +28,7 @@
     </div>
 
     <div>
-        <button id="login" onclick="location.href='calendar_editor.html'">Log in</button>
+        <button id="login" type="submit" onclick=auth()>Log in</button>
     </div>
 </div>
 </body>

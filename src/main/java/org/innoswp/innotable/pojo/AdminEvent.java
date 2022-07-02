@@ -1,7 +1,8 @@
-package org.innoswp.innotable.model.event;
+package org.innoswp.innotable.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.innoswp.innotable.model.event.CalendarEvent;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +23,15 @@ public class AdminEvent {
 
     public CalendarEvent toCalendarEvent() throws ParseException {
         var formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+
+        if (name == null || name.equals(""))
+            throw new ParseException("Name is empty", 0);
+
+        if (description == null || description.equals(""))
+            throw new ParseException("Description is empty", 0);
+
+        if (location == null || location.equals(""))
+            throw new ParseException("Location is empty", 0);
 
         return new CalendarEvent(
                 name,

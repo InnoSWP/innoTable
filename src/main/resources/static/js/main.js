@@ -1,31 +1,59 @@
 function auth() {
-    let login = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
+    let email = document.getElementById("email").value
+    let password = document.getElementById("password").value
 
-    let auth = true;  //TODO make proper authentication
-    if (auth) {
-        window.location.href = "create_event.html"
-    }
+    const xhr = new XMLHttpRequest()
+
+    xhr.open('POST', 'login/send')
+    xhr.setRequestHeader('Content-Type', 'application/json')
+
+    xhr.onreadystatechange = function () {
+        if (this.readyState !== 4) return
+
+        if (this.status === 200) {
+            window.location.replace("/")
+        } else {
+            alert("Incorrect email or password!")
+        }
+    };
+
+
+    let loginJson = JSON.stringify({
+        email: email,
+        password: password
+    })
+
+    xhr.send(loginJson)
 }
 
 function getEvent() {
-    let name = document.getElementById("name").value;
-    let description = document.getElementById("description").value;
-    let location = document.getElementById("location").value;
-    let dateStart = document.getElementById("date-start").value;
-    let timeStart = document.getElementById("time-start").value;
-    let dateEnd = document.getElementById("date-end").value;
-    let timeEnd = document.getElementById("time-end").value;
-    let groups = getCheckedCheckBoxes('groups[]');
+    let name = document.getElementById("name").value
+    let description = document.getElementById("description").value
+    let location = document.getElementById("location").value
+    let dateStart = document.getElementById("date-start").value
+    let timeStart = document.getElementById("time-start").value
+    let dateEnd = document.getElementById("date-end").value
+    let timeEnd = document.getElementById("time-end").value
+    let groups = getCheckedCheckBoxes('groups[]')
 
 
     let xhr = new XMLHttpRequest();
-    xhr.open("PUT", "http://localhost:8080/api/create_event", true);
+    xhr.open("POST", "new_event", true)
 
-    xhr.setRequestHeader("Accept", "application/json");
-    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Accept", "application/json")
+    xhr.setRequestHeader("Content-Type", "application/json")
 
-    xhr.onload = () => console.log(xhr.responseText);
+    xhr.onreadystatechange = function () {
+        if (this.readyState !== 4) return
+
+        if (this.status === 200) {
+            window.location.replace("/")
+        } else {
+            alert("Incorrect event data!")
+        }
+    };
+
+    xhr.onload = () => console.log(xhr.responseText)
 
     let eventJson = `{
         "name": "${name}",
@@ -36,20 +64,18 @@ function getEvent() {
         "endDate": "${dateEnd}",
         "endTime": "${timeEnd}",
         "groups": ${JSON.stringify(groups)}
-    }`;
+    }`
 
-    xhr.send(eventJson);
-
-    window.location.href = "create_event.html"
+    xhr.send(eventJson)
 }
 
 function getCheckedCheckBoxes(name) {
-    let checkboxes = document.getElementsByName(name);
-    let checkboxesChecked = [];
+    let checkboxes = document.getElementsByName(name)
+    let checkboxesChecked = []
     for (let index = 0; index < checkboxes.length; index++) {
         if (checkboxes[index].checked) {
-            checkboxesChecked.push(checkboxes[index].value);
+            checkboxesChecked.push(checkboxes[index].value)
         }
     }
-    return checkboxesChecked;
+    return checkboxesChecked
 }
