@@ -185,8 +185,8 @@ body {
   transition: all 200ms;
   top: 12px;
   left: 10px;
-  background-color: #FFF;
 }
+
 .placeholder-container input:focus + label,
 .placeholder-container input:not(:placeholder-shown) + label{
   top: -10px;
