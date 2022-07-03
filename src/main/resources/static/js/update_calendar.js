@@ -6,10 +6,17 @@ const bigCalendarBody = document.getElementById('bigCalendarBody');
 const newEventModal = document.getElementById('newEventModal');
 const eventModal = document.getElementById('eventModal');
 const backDrop = document.getElementById('modalBackDrop');
-const eventTitleInput = document.getElementById('eventTitleInput');
 const bigCalendarWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const eventPlace = document.getElementById('eventPlace')
+
+const eventTitleInput = document.getElementById('eventTitleInput');
+const eventLocation = document.getElementById('eventPlace')
 const description = document.getElementById('description');
+const eventTimeStart = document.getElementById('timeStart')
+const eventTimeEnd = document.getElementById('timeEnd')
+const eventGroups = getCheckedCheckBoxes('groups[]')
+
+// clicked = currentDateOfEvent
+
 
 function openModal(date) {
     const curDay = new Date();
@@ -18,12 +25,12 @@ function openModal(date) {
         clicked = date;
         let ev = '';
 
-        const eventForDay = events.find(e => e.date === clicked);
+        const eventForDay = events.find(e => e.startDate === clicked);
 
         if (eventForDay) {
             for (let j = 0; j < d.length; j++) {
-                if (d[j].date === date) {
-                    ev += 'title: ' + d[j].title + ' location: ' + d[j].place + '\n';
+                if (d[j].startDate === date) {
+                    ev += 'title: ' + d[j].name + ' location: ' + d[j].location + '\n';
                 }
             }
         } else {
@@ -40,12 +47,9 @@ function openNewModal() {
     backDrop.style.display = 'block';
 }
 
-function load(isClear) {
-    if (isClear) {
-        localStorage.clear()
-        events = []
-    }
-
+function load() {
+    // events = []
+    // localStorage.clear()
     const dt = new Date();
 
     if (nav !== 0) {
@@ -82,7 +86,7 @@ function load(isClear) {
         if (i > paddingDays) {
             daySquare.innerText = (i - paddingDays) + "";
 
-            const eventForDay = events.find(e => e.date === dayString);
+            const eventForDay = events.find(e => e.startDate === dayString);
 
             if (i - paddingDays === day && nav === 0) {
                 daySquare.id = 'currentDay';
@@ -97,10 +101,10 @@ function load(isClear) {
                 let k = 0;
                 const eventDiv = document.createElement('div');
                 eventDiv.classList.add('event');
-                eventDiv.innerText = eventForDay.title;
+                eventDiv.innerText = eventForDay.name;
                 daySquare.appendChild(eventDiv);
                 for (let j = 0; j < d.length; j++) {
-                    if (d[j].date === stringDate) {
+                    if (d[j].startDate === stringDate) {
                         k++;
                     }
                 }
@@ -131,24 +135,49 @@ function closeModal() {
     eventModal.style.display = 'none';
     backDrop.style.display = 'none';
     eventTitleInput.value = '';
-    eventPlace.value = '';
+    eventLocation.value = '';
     description.value = '';
     clicked = null;
-    load(false);
+    load();
 }
 
 function saveEvent() {
     if (eventTitleInput.value) {
         eventTitleInput.classList.remove('error');
 
-        events.push({
-            date: clicked,
-            title: eventTitleInput.value,
-            place: eventPlace.value,
-        });
+        let eventJson = {
+            name: eventTitleInput.value,
+            description: description.value,
+            location: eventLocation.value,
+            startDate: clicked,
+            startTime: eventTimeStart.value,
+            endDate: clicked,
+            endTime: eventTimeEnd.value,
+            groups: eventGroups
+        }
 
-        localStorage.setItem('events', JSON.stringify(events));
-        closeModal();
+        events.push(eventJson);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "save_event", true)
+
+        xhr.setRequestHeader("Accept", "application/json")
+        xhr.setRequestHeader("Content-Type", "application/json")
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState !== 4) return
+
+            if (this.status === 200) {
+                localStorage.setItem('events', JSON.stringify(events));
+                closeModal();
+                alert("OK!")
+            } else {
+                eventTitleInput.classList.add('error');
+                alert("Something went wrong!")
+            }
+        };
+
+        xhr.send(JSON.stringify(eventJson))
     } else {
         eventTitleInput.classList.add('error');
     }
@@ -157,11 +186,11 @@ function saveEvent() {
 function initButtons() {
     document.getElementById('nextButton').addEventListener('click', () => {
         nav++;
-        load(false);
+        load();
     });
     document.getElementById('backButton').addEventListener('click', () => {
         nav--;
-        load(false);
+        load();
     });
     document.getElementById('saveButton').addEventListener('click', saveEvent);
     document.getElementById('cancelButton').addEventListener('click', closeModal);
@@ -170,6 +199,18 @@ function initButtons() {
         eventModal.style.display = 'none';
         openNewModal();
     });
+}
+
+function getCheckedCheckBoxes(name) {
+    let checkboxes = document.getElementsByName(name)
+    let checkboxesChecked = []
+    for (let index = checkboxes.length - 1; index >= 0; index--) {
+        if (checkboxes[index].checked) {
+            checkboxesChecked.push(checkboxes[index].value)
+        }
+
+    }
+    return checkboxesChecked
 }
 
 (function ($) {
@@ -199,7 +240,7 @@ function initButtons() {
         });
 
         this.parent().find('.checkselect-control').on('click', function () {
-            $popup = $(this).next();
+            const $popup = $(this).next();
             $('.checkselect-popup').not($popup).css('display', 'none');
             if ($popup.is(':hidden')) {
                 $popup.css('display', 'block');
@@ -220,4 +261,4 @@ function initButtons() {
 $('.checkselect').checkselect();
 
 initButtons();
-load(true);
+load();

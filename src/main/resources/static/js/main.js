@@ -72,7 +72,7 @@ function getEvent() {
 function getCheckedCheckBoxes(name) {
     let checkboxes = document.getElementsByName(name)
     let checkboxesChecked = []
-    for (let index = 0; index < checkboxes.length; index++) {
+    for (let index = 0; index <= checkboxes.length; index++) {
         if (checkboxes[index].checked) {
             checkboxesChecked.push(checkboxes[index].value)
         }
