@@ -23,7 +23,7 @@ function openModal(date) {
         if (eventForDay) {
             for (let j = 0; j < d.length; j++) {
                 if (d[j].date === date) {
-                    ev = ev + d[j].title + ' ' + d[j].place + '\n';
+                    ev += 'title: ' + d[j].title + ' location: ' + d[j].place + '\n';
                 }
             }
         } else {
@@ -80,7 +80,7 @@ function load(isClear) {
         const stringDate = `${month + 1}/${i - paddingDays}/${year}`;
 
         if (i > paddingDays) {
-            daySquare.innerText = i - paddingDays;
+            daySquare.innerText = (i - paddingDays) + "";
 
             const eventForDay = events.find(e => e.date === dayString);
 
