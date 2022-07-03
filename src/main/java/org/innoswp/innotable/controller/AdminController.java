@@ -83,7 +83,7 @@ public class AdminController {
         if (!isLoggedIn) {
             modelAndView.setViewName("redirect:/login");
         } else {
-            modelAndView.setViewName("create_event.html");
+            modelAndView.setViewName("calendar_editor.html");
         }
         return modelAndView;
     }

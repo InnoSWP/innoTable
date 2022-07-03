@@ -162,8 +162,8 @@ public class JdbcModel implements Model {
             preparedStatement.setString(2, event.description());
             preparedStatement.setString(3, event.location());
 
-            preparedStatement.setTimestamp(4, new Timestamp(event.startTime().getTime()));
-            preparedStatement.setTimestamp(5, new Timestamp(event.endTime().getTime()));
+            preparedStatement.setTimestamp(4, new Timestamp(event.startDateTime().getTime()));
+            preparedStatement.setTimestamp(5, new Timestamp(event.endDateTime().getTime()));
 
             preparedStatement.setString(6, group);
 

@@ -52,8 +52,8 @@ public class EwsForwarder implements EventForwarder {
 
         appointment.setLocation(event.location());
 
-        appointment.setStart(event.startTime());
-        appointment.setEnd(event.endTime());
+        appointment.setStart(event.startDateTime());
+        appointment.setEnd(event.startDateTime());
 
         return appointment;
     }
