@@ -169,10 +169,10 @@ function saveEvent() {
             if (this.status === 200) {
                 localStorage.setItem('events', JSON.stringify(events));
                 closeModal();
-                alert("OK!")
+                document.getElementById('warning').style.display = 'none';
             } else {
                 eventTitleInput.classList.add('error');
-                alert("Something went wrong!")
+                document.getElementById('warning').style.display = 'block';
             }
         };
 
