@@ -29,6 +29,8 @@ CREATE TABLE IF NOT EXISTS event
     group_id    INT REFERENCES "group" (id) ON DELETE CASCADE
 );
 
+DROP TABLE IF EXISTS user_group;
+
 CREATE TABLE IF NOT EXISTS user_group
 (
     user_id  INT NOT NULL REFERENCES "user" (id) ON DELETE CASCADE,
