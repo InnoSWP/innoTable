@@ -152,6 +152,13 @@ body {
     font-family: sans-serif;
 }
 
+#warning {
+    display: none;
+    height: 16px;
+    color: red;
+    margin-bottom: 10px;
+}
+
 .placeholder-form {
   box-sizing: border-box;
   width: 100%;
