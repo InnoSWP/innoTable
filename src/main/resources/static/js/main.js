@@ -13,7 +13,7 @@ function auth() {
         if (this.status === 200) {
             window.location.replace("/")
         } else {
-            alert("Incorrect email or password!")
+            document.getElementById('warning').style.display = 'block';
         }
     };
 
