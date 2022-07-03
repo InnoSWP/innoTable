@@ -13,7 +13,6 @@ const eventLocation = document.getElementById('eventPlace')
 const description = document.getElementById('description');
 const eventTimeStart = document.getElementById('timeStart')
 const eventTimeEnd = document.getElementById('timeEnd')
-const eventGroups = getCheckedCheckBoxes('groups[]')
 
 // clicked = currentDateOfEvent
 
@@ -153,7 +152,7 @@ function saveEvent() {
             startTime: eventTimeStart.value,
             endDate: clicked,
             endTime: eventTimeEnd.value,
-            groups: eventGroups
+            groups: getCheckedCheckBoxes('groups[]')
         }
 
         events.push(eventJson);
