@@ -33,6 +33,7 @@ DROP TABLE IF EXISTS user_group;
 
 CREATE TABLE IF NOT EXISTS user_group
 (
+    id       SERIAL PRIMARY KEY,
     user_id  INT NOT NULL REFERENCES "user" (id) ON DELETE CASCADE,
     group_id INT NOT NULL REFERENCES "group" (id) ON DELETE CASCADE
 );
