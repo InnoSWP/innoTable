@@ -42,6 +42,7 @@ public class EwsForwarder implements EventForwarder {
 
         for (var user : users) {
             appointment.getRequiredAttendees().add(user.email());
+            log.info("Added user " + user.email() + " to attendees");
         }
 
         appointment.save(SendInvitationsMode.SendOnlyToAll);

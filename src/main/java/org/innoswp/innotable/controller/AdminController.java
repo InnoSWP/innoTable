@@ -26,9 +26,17 @@ public class AdminController {
 
     private boolean isLoggedIn = false;
 
+    private long startTime = 0;
+
     @RequestMapping("/")
     public ModelAndView index() {
         var modelAndView = new ModelAndView();
+
+        // Crutch of the day: reset session for "customer" after 1 hour
+        if (startTime != 0 && System.currentTimeMillis() - startTime >= 3600000) {
+            isLoggedIn = false;
+            startTime = 0;
+        }
 
         if (!isLoggedIn) {
             modelAndView.setViewName("redirect:/login");
@@ -44,6 +52,7 @@ public class AdminController {
 
         if (!isLoggedIn) {
             modelAndView.setViewName("login.html");
+            startTime = System.currentTimeMillis();
             return modelAndView;
         } else {
             return getCalendarEditor();
