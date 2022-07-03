@@ -88,8 +88,8 @@ public class AdminController {
         return modelAndView;
     }
 
-    @PostMapping("/new_event")
-    public ResponseEntity<HttpStatus> createEvent(@RequestBody AdminEvent adminEvent) {
+    @PostMapping("/save_event")
+    public ResponseEntity<HttpStatus> saveEvent(@RequestBody AdminEvent adminEvent) {
         var groups = adminEvent.getGroups();
 
         try {
@@ -99,12 +99,11 @@ public class AdminController {
 
             for (var group : groups) {
                 users.addAll(model.getUsersByGroup(group));
-                model.saveEvent(calendarEvent, group);
+//                model.saveEvent(calendarEvent, group);
             }
 
-            for (var user : users) {
-                forwarder.pushEventForUser(user, calendarEvent);
-            }
+            forwarder.pushEventForUsers(users, calendarEvent);
+
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {

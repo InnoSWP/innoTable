@@ -3,6 +3,7 @@ package org.innoswp.innotable.controller.forwarder;
 import lombok.extern.slf4j.Slf4j;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.service.SendInvitationsMode;
 import microsoft.exchange.webservices.data.core.service.item.Appointment;
 import microsoft.exchange.webservices.data.credential.WebCredentials;
 import microsoft.exchange.webservices.data.property.complex.MessageBody;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.Collection;
 
 @Slf4j
 @Component
@@ -35,13 +37,15 @@ public class EwsForwarder implements EventForwarder {
     }
 
     @Override
-    public void pushEventForUser(User user, CalendarEvent calendarEvent) throws Exception {
+    public void pushEventForUsers(Collection<User> users, CalendarEvent calendarEvent) throws Exception {
         var appointment = createAppointment(calendarEvent);
 
-        appointment.getRequiredAttendees().add(user.email());
-        appointment.save();
+        for (var user : users) {
+            appointment.getRequiredAttendees().add(user.email());
+        }
 
-        log.info("Pushed event " + calendarEvent.title() + " for user");
+        appointment.save(SendInvitationsMode.SendOnlyToAll);
+        log.info("Pushed event " + calendarEvent.title());
     }
 
     private Appointment createAppointment(CalendarEvent event) throws Exception {
