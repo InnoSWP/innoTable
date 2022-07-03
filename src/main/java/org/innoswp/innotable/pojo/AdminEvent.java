@@ -22,7 +22,7 @@ public class AdminEvent {
     private List<String> groups;
 
     public CalendarEvent toCalendarEvent() throws ParseException {
-        var formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        var formatter = new SimpleDateFormat("M/d/yyyy hh:mm");
 
         if (name == null || name.equals(""))
             throw new ParseException("Name is empty", 0);
