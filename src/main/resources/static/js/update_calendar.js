@@ -40,8 +40,12 @@ function openNewModal() {
     backDrop.style.display = 'block';
 }
 
-function load() {
-    // localStorage.clear()
+function load(isClear) {
+    if (isClear) {
+        localStorage.clear()
+        events = []
+    }
+
     const dt = new Date();
 
     if (nav !== 0) {
@@ -130,7 +134,7 @@ function closeModal() {
     eventPlace.value = '';
     description.value = '';
     clicked = null;
-    load();
+    load(false);
 }
 
 function saveEvent() {
@@ -153,11 +157,11 @@ function saveEvent() {
 function initButtons() {
     document.getElementById('nextButton').addEventListener('click', () => {
         nav++;
-        load();
+        load(false);
     });
     document.getElementById('backButton').addEventListener('click', () => {
         nav--;
-        load();
+        load(false);
     });
     document.getElementById('saveButton').addEventListener('click', saveEvent);
     document.getElementById('cancelButton').addEventListener('click', closeModal);
@@ -216,4 +220,4 @@ function initButtons() {
 $('.checkselect').checkselect();
 
 initButtons();
-load();
+load(true);
