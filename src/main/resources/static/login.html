@@ -16,20 +16,25 @@
     <div>
         <img id="logo" src="pictures/logo.png" alt="innoTable+">
     </div>
-
-    <script src="js/main.js"></script>
-
-    <div>
-        <label for="email"></label><input type="email" placeholder="email" id="email">
+    <div id="warning">
+        <h>Incorrect email or password!</h>
     </div>
+    <div class="placeholder-form">
+        <div class="placeholder-container">
+            <label for="email"></label><input id="email" type="text" placeholder=" "/>
+            <label>email</label>
+        </div>
 
-    <div>
-        <label for="password"></label><input type="password" placeholder="password" id="password">
+        <div class="placeholder-container">
+            <label for="password"></label><input id="password" type="password" placeholder=" "/>
+            <label>password</label>
+        </div>
     </div>
 
     <div>
         <button id="login" type="submit" onclick=auth()>Log in</button>
     </div>
 </div>
+<script src="js/main.js"></script>
 </body>
 </html>
